@@ -82,11 +82,11 @@
 					<systemProperties>
 						<property>
 							<name>SOURCE</name>
-							<value>${env.EWNHOME}/src/yaml</value>
+							<value>${env.WNHOME31}</value>
 						</property>
 						<property>
 							<name>SOURCE2</name>
-							<value>${project.basedir}/yaml2</value>
+							<value>${project.basedir}/wndb2</value>
 						</property>
 						<property>
 							<name>SILENT</name>
