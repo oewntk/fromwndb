@@ -322,8 +322,11 @@ public class Parser
 								// retrieve sensekey
 								String sensekey = sensekeyByKey.get(k);
 
+								// type
+								String type = Character.toString(pos);
+
 								// lex with case-sensitive lemma
-								Lex lex = new org.oewntk.model.Lex(null, memberLemma, Character.toString(pos));
+								Lex lex = new org.oewntk.model.Lex(null, memberLemma, type);
 								lexesByLemma.computeIfAbsent(memberLemma, l -> new ArrayList<>()).add(lex);
 
 								String[] verbFrames = pos != 'v' ? null : buildVerbFrames(synset, memberLemma);
