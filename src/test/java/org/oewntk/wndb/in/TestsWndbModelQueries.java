@@ -4,18 +4,16 @@
 
 package org.oewntk.wndb.in;
 
-import org.oewntk.model.LibTestModelQueries;
-import org.oewntk.model.Model;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oewntk.model.LibTestModelQueries;
+import org.oewntk.model.Model;
+import org.oewntk.pojos.ParsePojoException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Set;
-
-import org.oewntk.pojos.ParsePojoException;
 
 public class TestsWndbModelQueries
 {
@@ -30,10 +28,6 @@ public class TestsWndbModelQueries
 			//DO NOTHING
 		}
 	});
-
-	private static final boolean peekTestWords = false;
-
-	private static final Set<String> testWords = Set.of("baroque", "Baroque", "bass", "row");
 
 	private static Model model;
 
@@ -59,6 +53,19 @@ public class TestsWndbModelQueries
 	{
 		LibTestModelQueries.testWordByType(model, "row", ps);
 	}
+
+	@Test
+	public void testRowByTypeAndPronunciation()
+	{
+		LibTestModelQueries.testWordByTypeAndPronunciation(model, "row", ps);
+	}
+
+	@Test
+	public void testRowByPosAndPronunciation()
+	{
+		LibTestModelQueries.testWordByTypeAndPronunciation(model, "row", ps);
+	}
+
 
 	@Test
 	public void testCriticalByType()

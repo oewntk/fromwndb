@@ -4,17 +4,16 @@
 
 package org.oewntk.wndb.in;
 
-import org.oewntk.model.CoreModel;
-import org.oewntk.model.LibTestModelKeys;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oewntk.model.CoreModel;
+import org.oewntk.model.LibTestModelKeys;
+import org.oewntk.pojos.ParsePojoException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
-import org.oewntk.pojos.ParsePojoException;
 
 public class TestsWndbModelKeys
 {
@@ -61,19 +60,31 @@ public class TestsWndbModelKeys
 		LibTestModelKeys.testMobile(model, ps);
 	}
 
-	@Test
-	public void testBass()
+	@Test(expected = IllegalArgumentException.class)
+	public void testBassDeep()
 	{
-		LibTestModelKeys.testBass(model, ps);
+		LibTestModelKeys.testBassDeep(model, ps);
 	}
 
-	@Test
-	public void testRow()
+	@Test(expected = IllegalArgumentException.class)
+	public void testBassShallow()
 	{
-		LibTestModelKeys.testRow(model, ps);
+		LibTestModelKeys.testBassShallow(model, ps);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
+	public void testRowDeep()
+	{
+		LibTestModelKeys.testRowDeep(model, ps);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRowShallow()
+	{
+		LibTestModelKeys.testRowShallow(model, ps);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testCritical()
 	{
 		LibTestModelKeys.testCritical(model, ps);

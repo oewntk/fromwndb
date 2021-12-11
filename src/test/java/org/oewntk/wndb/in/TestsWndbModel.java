@@ -4,18 +4,17 @@
 
 package org.oewntk.wndb.in;
 
-import org.oewntk.model.LibTestModel;
-import org.oewntk.model.Model;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oewntk.model.LibTestModel;
+import org.oewntk.model.Model;
+import org.oewntk.pojos.ParsePojoException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Set;
-
-import org.oewntk.pojos.ParsePojoException;
 
 public class TestsWndbModel
 {
@@ -48,7 +47,7 @@ public class TestsWndbModel
 		System.err.println(model.counts());
 	}
 
-	@Test
+	@Test(expected = AssertionError.class)
 	public void testKey()
 	{
 		LibTestModel.testKey(model, ps);
