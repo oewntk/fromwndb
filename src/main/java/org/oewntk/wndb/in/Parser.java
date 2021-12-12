@@ -373,7 +373,7 @@ public class Parser
 		this.dir = dir;
 	}
 
-	public CoreModel parseAll(final Consumer<Synset> synsetConsumer, final Consumer<Sense> senseConsumer, final Consumer<Index> indexConsumer)
+	public CoreModel parseCoreModel(final Consumer<Synset> synsetConsumer, final Consumer<Sense> senseConsumer, final Consumer<Index> indexConsumer)
 			throws IOException, ParsePojoException
 	{
 		DataParser.parseAllSynsets(dir, synsetConsumer);
@@ -386,9 +386,9 @@ public class Parser
 		return new CoreModel(Collections.unmodifiableMap(lexesByLemma), Collections.unmodifiableMap(sensesById), Collections.unmodifiableMap(synsetsById));
 	}
 
-	public CoreModel parseAll() throws IOException, ParsePojoException
+	public CoreModel parseCoreModel() throws IOException, ParsePojoException
 	{
-		return parseAll(synsetConsumer, senseConsumer, indexConsumer);
+		return parseCoreModel(synsetConsumer, senseConsumer, indexConsumer);
 	}
 
 	// MAIN
@@ -400,7 +400,7 @@ public class Parser
 
 		// Input
 		File inDir = new File(args[0]);
-		new Parser(inDir).parseAll();
+		new Parser(inDir).parseCoreModel();
 
 		// Timing
 		final long endTime = System.currentTimeMillis();
