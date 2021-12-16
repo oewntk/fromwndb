@@ -190,20 +190,19 @@ public class Parser
 	// final results
 
 	/**
-	 * Lexical items mapped by lemma written form.
-	 * A multimap: each value is an array of lexes for the lemma.
+	 * Lexical units
 	 */
-	private final Map<String, List<Lex>> lexesByLemma = new TreeMap<>();
+	private final Collection<Lex> lexes = new ArrayList<>();
 
 	/**
-	 * Senses mapped by id (sensekey)
+	 * Senses
 	 */
-	private final Map<String, org.oewntk.model.Sense> sensesById = new TreeMap<>();
+	private final Collection<org.oewntk.model.Sense> senses = new ArrayList<>();
 
 	/**
-	 * Synsets mapped by id (synset id)
+	 * Synsets
 	 */
-	private final Map<String, org.oewntk.model.Synset> synsetsById = new TreeMap<>();
+	private final Collection<org.oewntk.model.Synset> synsets = new ArrayList<>();
 
 	// intermediate pojos
 
@@ -243,8 +242,8 @@ public class Parser
 
 		Map<String, List<String>> relations = buildSynsetRelations(synset.relations);
 
-		org.oewntk.model.Synset newS = new org.oewntk.model.Synset(source, synsetId, type, members, definitions, examples, null, relations);
-		synsetsById.put(synsetId, newS);
+		org.oewntk.model.Synset modelSynset = new org.oewntk.model.Synset(synsetId, type, members, definitions, examples, null, relations, source);
+		synsets.add(modelSynset);
 
 		pojoSynsetsById.put(synset.synsetId, synset);
 	};
@@ -326,8 +325,6 @@ public class Parser
 
 		String lemma = idx.lemma.toString();
 		char pos = idx.pos.toChar();
-		String source = null;
-		//psi.println(lemma);
 
 		// senses
 		final int[] i = {1};
@@ -373,16 +370,17 @@ public class Parser
 								String type = Character.toString(pos);
 
 								// lex with case-sensitive lemma
-								Lex lex = new org.oewntk.model.Lex(null, memberLemma, type);
-								lexesByLemma.computeIfAbsent(memberLemma, l -> new ArrayList<>()).add(lex);
+								Lex lex = new org.oewntk.model.Lex(memberLemma, type, null);
+								lexes.add(lex);
 
 								String[] verbFrames = pos != 'v' ? null : buildVerbFrames(synset, memberLemma);
 								String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
 
 								// lex senses
 								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), verbFrames, adjPosition, relations);
-								sensesById.put(sensekey, modelSense);
 								lex.addSense(modelSense);
+
+								senses.add(modelSense);
 							});
 					i[0]++;
 				});
@@ -407,7 +405,7 @@ public class Parser
 		LemmaRef toWordRef = lr.getToWord();
 		String toWord = toWordRef.resolve(toSynset).toString();
 		Key3 k3 = new Key3(toWord, toSynsetId.getPos().toChar(), toSynsetId.getOffset());
-		Key4 k4 = new Key4(toWord, toSynsetId.getPos().toChar(), toSynsetId.getOffset(), toWordRef.getWordNum());
+		// Key4 k4 = new Key4(toWord, toSynsetId.getPos().toChar(), toSynsetId.getOffset(), toWordRef.getWordNum());
 		String sensekey = sensekeyByKey.get(k3);
 		assert sensekey != null : "no sensekey for " + k3;
 		return sensekey;
@@ -449,30 +447,14 @@ public class Parser
 		SenseParser.parseSenses(dir, senseConsumer);
 		IndexParser.parseAllIndexes(dir, indexConsumer);
 		psi.println();
-		psi.printf("%-50s %d%n", "synsets by id", synsetsById.size());
-		psi.printf("%-50s %d%n", "senses by id", sensesById.size());
-		psi.printf("%-50s %d%n", "lexes by lemma", lexesByLemma.size());
-		return new CoreModel(Collections.unmodifiableMap(lexesByLemma), Collections.unmodifiableMap(sensesById), Collections.unmodifiableMap(synsetsById));
+		psi.printf("%-50s %d%n", "synsets by id", synsets.size());
+		psi.printf("%-50s %d%n", "senses by id", senses.size());
+		psi.printf("%-50s %d%n", "lexes by lemma", lexes.size());
+		return new CoreModel(lexes, senses, synsets);
 	}
 
 	public CoreModel parseCoreModel() throws IOException, ParsePojoException
 	{
 		return parseCoreModel(synsetConsumer, senseConsumer, indexConsumer);
-	}
-
-	// MAIN
-
-	public static void main(String[] args) throws IOException, ParsePojoException
-	{
-		// Timing
-		final long startTime = System.currentTimeMillis();
-
-		// Input
-		File inDir = new File(args[0]);
-		new Parser(inDir).parseCoreModel();
-
-		// Timing
-		final long endTime = System.currentTimeMillis();
-		psi.println("Total execution time: " + (endTime - startTime) / 1000 + "s");
 	}
 }

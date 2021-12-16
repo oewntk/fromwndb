@@ -8,9 +8,8 @@ import org.oewntk.model.VerbFrame;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class VerbFrameParser
 {
@@ -21,14 +20,14 @@ public class VerbFrameParser
 		this.inDir = inDir;
 	}
 
-	public Map<String, VerbFrame> parse() throws IOException
+	public Collection<VerbFrame> parse() throws IOException
 	{
-		Map<String, VerbFrame> result = new HashMap<>();
+		Collection<VerbFrame> result = new ArrayList<>();
 		parseVerbFrames(new File(inDir, "verbFrames.txt"), result);
-		return Collections.unmodifiableMap(result);
+		return result;
 	}
 
-	private void parseVerbFrames(final File file, final Map<String, VerbFrame> map) throws IOException
+	private void parseVerbFrames(final File file, final Collection<VerbFrame> verbFrames) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
@@ -48,7 +47,7 @@ public class VerbFrameParser
 					String[] fields = line.split(":");
 					String field1 = fields[0];
 					String field2 = fields[1].trim();
-					map.put(field1, new VerbFrame(field1, field2));
+					verbFrames.add(new VerbFrame(field1, field2));
 				}
 				catch (final RuntimeException e)
 				{

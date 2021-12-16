@@ -8,9 +8,10 @@ import org.oewntk.model.TagCount;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 public class SenseToTagCountsParser
 {
@@ -21,19 +22,18 @@ public class SenseToTagCountsParser
 		this.inDir = inDir;
 	}
 
-	public Map<String, TagCount> parse() throws IOException
+	public Collection<Entry<String, TagCount>> parse() throws IOException
 	{
-		Map<String, TagCount> result = new HashMap<>();
+		Collection<Entry<String, TagCount>> result = new ArrayList<>();
 		parseTagCounts(new File(inDir, "cntlist.rev"), result);
-		return Collections.unmodifiableMap(result);
+		return result;
 	}
 
-	public static void parseTagCounts(File file, Map<String, TagCount> map) throws IOException
+	public static void parseTagCounts(File file, Collection<Entry<String, TagCount>> entries) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
 		{
-			long valueCount = 0;
 			int lineCount = 0;
 			String line;
 			while ((line = reader.readLine()) != null)
@@ -52,8 +52,7 @@ public class SenseToTagCountsParser
 					int senseNum = Integer.parseInt(fields[1]);
 					int tagCnt = Integer.parseInt(fields[2]);
 
-					map.put(sensekey, new TagCount(senseNum, tagCnt));
-					valueCount++;
+					entries.add(new SimpleEntry<>(sensekey, new TagCount(senseNum, tagCnt)));
 				}
 				catch (final RuntimeException e)
 				{

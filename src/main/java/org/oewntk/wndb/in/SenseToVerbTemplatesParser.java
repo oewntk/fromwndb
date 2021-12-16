@@ -6,9 +6,10 @@ package org.oewntk.wndb.in;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 public class SenseToVerbTemplatesParser
 {
@@ -19,19 +20,18 @@ public class SenseToVerbTemplatesParser
 		this.inDir = inDir;
 	}
 
-	public Map<String, int[]> parse() throws IOException
+	public Collection<Entry<String, int[]>> parse() throws IOException
 	{
-		Map<String, int[]> result = new HashMap<>();
+		Collection<Entry<String, int[]>> result = new ArrayList<>();
 		parseVerbTemplates(new File(inDir, "sentidx.vrb"), result);
-		return Collections.unmodifiableMap(result);
+		return result;
 	}
 
-	public static void parseVerbTemplates(File file, Map<String, int[]> map) throws IOException
+	public static void parseVerbTemplates(File file, Collection<Entry<String, int[]>> entries) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
 		{
-			long valueCount = 0;
 			int lineCount = 0;
 			String line;
 			while ((line = reader.readLine()) != null)
@@ -51,8 +51,7 @@ public class SenseToVerbTemplatesParser
 					{
 						templateIds[i - 1] = Integer.parseInt(fields[i]);
 					}
-					map.put(sensekey, templateIds);
-					valueCount++;
+					entries.add(new SimpleEntry<>(sensekey, templateIds));
 				}
 				catch (final RuntimeException e)
 				{

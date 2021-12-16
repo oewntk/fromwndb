@@ -8,9 +8,8 @@ import org.oewntk.model.VerbTemplate;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class VerbTemplateParser
 {
@@ -21,14 +20,14 @@ public class VerbTemplateParser
 		this.inDir = inDir;
 	}
 
-	public Map<Integer, VerbTemplate> parse() throws IOException
+	public Collection<VerbTemplate> parse() throws IOException
 	{
-		Map<Integer, VerbTemplate> result = new HashMap<>();
+		Collection<VerbTemplate> result = new ArrayList<>();
 		parseVerbTemplates(new File(inDir, "verbTemplates.txt"), result);
-		return Collections.unmodifiableMap(result);
+		return result;
 	}
 
-	private static void parseVerbTemplates(File file, Map<Integer, VerbTemplate> map) throws IOException
+	private static void parseVerbTemplates(File file, Collection<VerbTemplate> verbTemplates) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
@@ -49,7 +48,7 @@ public class VerbTemplateParser
 					String field1 = fields[0];
 					String field2 = fields[1].trim();
 					int id = Integer.parseInt(field1);
-					map.put(id, new VerbTemplate(id, field2));
+					verbTemplates.add(new VerbTemplate(id, field2));
 				}
 				catch (final RuntimeException e)
 				{

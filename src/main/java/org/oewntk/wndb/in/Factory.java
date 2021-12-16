@@ -10,7 +10,10 @@ import org.oewntk.pojos.ParsePojoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.function.Supplier;
 
 public class Factory implements Supplier<Model>
@@ -37,12 +40,12 @@ public class Factory implements Supplier<Model>
 		try
 		{
 			// verb frames and templates
-			Map<String, VerbFrame> verbFramesById = new VerbFrameParser(inDir2).parse();
-			Map<Integer, VerbTemplate> verbTemplatesById = new VerbTemplateParser(inDir2).parse();
-			Map<String, int[]> senseToVerbTemplates = new SenseToVerbTemplatesParser(inDir).parse();
+			Collection<VerbFrame> verbFramesById = new VerbFrameParser(inDir2).parse();
+			Collection<VerbTemplate> verbTemplatesById = new VerbTemplateParser(inDir2).parse();
+			Collection<Entry<String, int[]>> senseToVerbTemplates = new SenseToVerbTemplatesParser(inDir).parse();
 
 			// tag counts
-			Map<String, TagCount> senseToTagCounts = new SenseToTagCountsParser(inDir).parse();
+			Collection<Entry<String, TagCount>> senseToTagCounts = new SenseToTagCountsParser(inDir).parse();
 
 			return new Model(coreModel, verbFramesById, verbTemplatesById, senseToVerbTemplates, senseToTagCounts).setSources(inDir, inDir2);
 		}
