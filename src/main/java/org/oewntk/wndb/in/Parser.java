@@ -11,6 +11,7 @@ import org.oewntk.parse.IndexParser;
 import org.oewntk.parse.SenseParser;
 import org.oewntk.parse.Utils;
 import org.oewntk.pojos.*;
+import org.oewntk.utils.Tracing;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,19 +31,14 @@ public class Parser
 	// PRINT STREAMS
 
 	/**
-	 * Null print stream
-	 */
-	private static final PrintStream psnull = Utils.nullPrintStream();
-
-	/**
 	 * Info print stream
 	 */
-	private static final PrintStream psi = !System.getProperties().containsKey("SILENT") ? System.out : psnull;
+	private static final PrintStream psi = !System.getProperties().containsKey("SILENT") ? Tracing.psInfo : Tracing.psNull;
 
 	/**
 	 * Error print stream
 	 */
-	private static final PrintStream pse = !System.getProperties().containsKey("SILENT") ? System.err : psnull;
+	private static final PrintStream pse = !System.getProperties().containsKey("SILENT") ? Tracing.psErr : Tracing.psNull;
 
 	/**
 	 * Key which is to represent sense
