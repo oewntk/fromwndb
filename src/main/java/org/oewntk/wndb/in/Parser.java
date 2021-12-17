@@ -9,7 +9,6 @@ import org.oewntk.model.Lex;
 import org.oewntk.parse.DataParser;
 import org.oewntk.parse.IndexParser;
 import org.oewntk.parse.SenseParser;
-import org.oewntk.parse.Utils;
 import org.oewntk.pojos.*;
 import org.oewntk.utils.Tracing;
 
@@ -229,22 +228,22 @@ public class Parser
 
 	private final Consumer<Synset> synsetConsumer = synset -> {
 
-		String source = synset.domain.getDomain();
 		String synsetId = synset.synsetId.toString();
 		char type = synset.type.toChar();
+		String domain = synset.domain.getName();
 		var members = Arrays.stream(synset.lemmas).map(LemmaCS::toString).toArray(String[]::new);
 		String[] definitions = new String[]{synset.gloss.getDefinition()};
 		String[] examples = synset.gloss.getSamples();
 
-		Map<String, List<String>> relations = buildSynsetRelations(synset.relations);
+		Map<String, Set<String>> relations = buildSynsetRelations(synset.relations);
 
-		org.oewntk.model.Synset modelSynset = new org.oewntk.model.Synset(synsetId, type, members, definitions, examples, null, relations, source);
+		org.oewntk.model.Synset modelSynset = new org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations);
 		synsets.add(modelSynset);
 
 		pojoSynsetsById.put(synset.synsetId, synset);
 	};
 
-	private static Map<String, List<String>> buildSynsetRelations(final Relation[] relations)
+	private static Map<String, Set<String>> buildSynsetRelations(final Relation[] relations)
 	{
 		if (relations == null || relations.length == 0)
 		{
@@ -253,7 +252,7 @@ public class Parser
 		return Arrays.stream(relations) //
 				.filter(r -> !(r instanceof LexRelation)) //
 				.map(relation -> new SimpleEntry<>(relation.type.getName(), relation.toSynsetId.toString())) // (type, synsetid)
-				.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toList()))); // type: synsetids
+				.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: synsetids
 	}
 
 	// 2 - C O N S U M E   S E N S E   P O J O S
@@ -316,7 +315,8 @@ public class Parser
 
 	public static final Map<Integer, String> VERBFRAMENID2IDS = Stream.of(org.oewntk.model.VerbFrame.VALUES).collect(toMap(data -> (Integer) data[2], data -> (String) data[0]));
 
-	//private static final Consumer<Index> indexConsumer = System.out::println;
+	//private static final Consumer<Index> indexConsumer = Tracing.psInfo::println;
+
 	private final Consumer<Index> indexConsumer = idx -> {
 
 		String lemma = idx.lemma.toString();

@@ -1,8 +1,7 @@
 /target/
 
-/wndb/
-/wndb_compat/
-/wndb31/
-/wndb
-/wndb_compat
-/wndb31
+/wndb*/
+/wndb*
+**/_*/
+**/_*
+

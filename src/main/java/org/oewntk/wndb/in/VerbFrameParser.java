@@ -51,7 +51,7 @@ public class VerbFrameParser
 				}
 				catch (final RuntimeException e)
 				{
-					System.err.println("[E] verb frame at line " + lineCount + " " + e);
+					Tracing.psErr.println("[E] verb frame at line " + lineCount + " " + e);
 				}
 			}
 		}

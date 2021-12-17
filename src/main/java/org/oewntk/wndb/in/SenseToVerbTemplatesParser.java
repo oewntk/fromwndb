@@ -55,7 +55,7 @@ public class SenseToVerbTemplatesParser
 				}
 				catch (final RuntimeException e)
 				{
-					System.err.println("[E] verb templates at line " + lineCount + " " + e);
+					Tracing.psErr.println("[E] verb templates at line " + lineCount + " " + e);
 				}
 			}
 		}

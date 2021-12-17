@@ -56,7 +56,7 @@ public class SenseToTagCountsParser
 				}
 				catch (final RuntimeException e)
 				{
-					System.err.println("[E] at line " + lineCount + " " + e);
+					Tracing.psErr.println("[E] at line " + lineCount + " " + e);
 				}
 			}
 		}
