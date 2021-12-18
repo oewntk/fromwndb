@@ -7,108 +7,84 @@ package org.oewntk.wndb.in;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oewntk.model.LibTestModelLexGroups;
-import org.oewntk.model.Model;
-
-import java.io.File;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 public class TestsWndbModelLexGroups
 {
-	private static final String source = System.getProperty("SOURCE");
-
-	private static final String source2 = System.getProperty("SOURCE2");
-
-	private static final PrintStream ps = !System.getProperties().containsKey("SILENT") ? System.out : new PrintStream(new OutputStream()
-	{
-		public void write(int b)
-		{
-			//DO NOTHING
-		}
-	});
-
-	private static Model model;
-
 	@BeforeClass
 	public static void init()
 	{
-		File inDir = new File(source);
-		File inDir2 = new File(source2);
-
-		model = new Factory(inDir, inDir2).get();
-		System.err.println(model.info());
-		System.err.println(model.counts());
+		TestsWndbCommon.init();
 	}
 
 	@Test
 	public void testCIMultipleAll()
 	{
-		LibTestModelLexGroups.testCIMultipleAll(model, ps);
+		LibTestModelLexGroups.testCIMultipleAll(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCILemmas()
 	{
-		LibTestModelLexGroups.testCILemmas(model, "battle of verdun", ps);
+		LibTestModelLexGroups.testCILemmas(TestsWndbCommon.model, "battle of verdun", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCICounts()
 	{
-		LibTestModelLexGroups.testCICounts(model, "battle of verdun", ps);
+		LibTestModelLexGroups.testCICounts(TestsWndbCommon.model, "battle of verdun", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCICountsFromMap()
 	{
-		LibTestModelLexGroups.testCICountsFromMap(model, "battle of verdun", ps);
+		LibTestModelLexGroups.testCICountsFromMap(TestsWndbCommon.model, "battle of verdun", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIHypermapWest()
 	{
-		LibTestModelLexGroups.testCIHypermap(model, "west", ps);
+		LibTestModelLexGroups.testCIHypermap(TestsWndbCommon.model, "west", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIHypermapBaroque()
 	{
-		LibTestModelLexGroups.testCIHypermap(model, "baroque", ps);
+		LibTestModelLexGroups.testCIHypermap(TestsWndbCommon.model, "baroque", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIAi()
 	{
-		LibTestModelLexGroups.testCILexesFor(model, "ai", ps);
+		LibTestModelLexGroups.testCILexesFor(TestsWndbCommon.model, "ai", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIBaroque()
 	{
-		LibTestModelLexGroups.testCILexesFor(model, "baroque", ps);
+		LibTestModelLexGroups.testCILexesFor(TestsWndbCommon.model, "baroque", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIWest3()
 	{
-		LibTestModelLexGroups.testCILexesFor3(model, "West", ps);
+		LibTestModelLexGroups.testCILexesFor3(TestsWndbCommon.model, "West", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIBaroque3()
 	{
-		LibTestModelLexGroups.testCILexesFor3(model, "Baroque", ps);
+		LibTestModelLexGroups.testCILexesFor3(TestsWndbCommon.model, "Baroque", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIAi3()
 	{
-		LibTestModelLexGroups.testCILexesFor3(model, "Ai", ps);
+		LibTestModelLexGroups.testCILexesFor3(TestsWndbCommon.model, "Ai", TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testCIAbsolute3()
 	{
-		LibTestModelLexGroups.testCILexesFor3(model, "Absolute", ps);
+		LibTestModelLexGroups.testCILexesFor3(TestsWndbCommon.model, "Absolute", TestsWndbCommon.ps);
 	}
 }

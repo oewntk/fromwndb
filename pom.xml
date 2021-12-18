@@ -82,7 +82,7 @@
 					<systemProperties>
 						<property>
 							<name>SOURCE</name>
-							<value>${env.WNHOME31}</value>
+							<value>${project.basedir}/wndb</value>
 						</property>
 						<property>
 							<name>SOURCE2</name>
