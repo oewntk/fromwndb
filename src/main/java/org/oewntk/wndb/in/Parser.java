@@ -374,7 +374,7 @@ public class Parser
 								String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
 
 								// lex senses
-								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), verbFrames, adjPosition, relations);
+								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, relations);
 								lex.addSense(modelSense);
 
 								senses.add(modelSense);
