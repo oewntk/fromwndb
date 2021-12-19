@@ -8,6 +8,7 @@ import org.oewntk.model.CoreModel;
 import org.oewntk.model.Lex;
 import org.oewntk.parse.DataParser;
 import org.oewntk.parse.IndexParser;
+import org.oewntk.parse.MorphParser;
 import org.oewntk.parse.SenseParser;
 import org.oewntk.pojos.*;
 import org.oewntk.utils.Tracing;
@@ -422,6 +423,23 @@ public class Parser
 				.toArray(String[]::new);
 	}
 
+	// 4 - C O N S U M E   M O R P H M A P P I N G   P O J O S
+	// from (noun|verb|adj|adv).exc
+
+	private final Map<String, Map<Character, TreeSet<String>>> lemmaToMorphs = new HashMap<>();
+
+	private final Consumer<MorphMapping> morphConsumer = mapping -> {
+
+		char pos = mapping.pos.toChar();
+		String morph = mapping.morph.toString();
+		Collection<Lemma> lemmas = mapping.lemmas;
+		lemmas.forEach(lemma ->  //
+				lemmaToMorphs //
+						.computeIfAbsent(lemma.toString(), l -> new HashMap<>()) //
+						.computeIfAbsent(pos, p -> new TreeSet<>()) //
+						.add(morph));
+	};
+
 	/**
 	 * WN dict directory
 	 */
@@ -437,20 +455,41 @@ public class Parser
 		this.dir = dir;
 	}
 
-	public CoreModel parseCoreModel(final Consumer<Synset> synsetConsumer, final Consumer<Sense> senseConsumer, final Consumer<Index> indexConsumer) throws IOException, ParsePojoException
+	public CoreModel parseCoreModel(final Consumer<Synset> synsetConsumer, final Consumer<Sense> senseConsumer, final Consumer<Index> indexConsumer, final Consumer<MorphMapping> morphConsumer) throws IOException, ParsePojoException
 	{
 		DataParser.parseAllSynsets(dir, synsetConsumer);
 		SenseParser.parseSenses(dir, senseConsumer);
 		IndexParser.parseAllIndexes(dir, indexConsumer);
-		psi.println();
+		MorphParser.parseAllMorphs(dir, morphConsumer);
+
+
 		psi.printf("%-50s %d%n", "synsets by id", synsets.size());
 		psi.printf("%-50s %d%n", "senses by id", senses.size());
 		psi.printf("%-50s %d%n", "lexes by lemma", lexes.size());
-		return new CoreModel(lexes, senses, synsets);
+		CoreModel model = new CoreModel(lexes, senses, synsets);
+		setMorphs(model, lemmaToMorphs);
+		return model;
 	}
 
 	public CoreModel parseCoreModel() throws IOException, ParsePojoException
 	{
-		return parseCoreModel(synsetConsumer, senseConsumer, indexConsumer);
+		return parseCoreModel(synsetConsumer, senseConsumer, indexConsumer, morphConsumer);
+	}
+
+	private void setMorphs(final CoreModel model, final Map<String, Map<Character, TreeSet<String>>> lemmaToMorphs)
+	{
+		var lexByLemma = model.getLexesByLemma();
+		lemmaToMorphs.forEach((lemma, map2) -> //
+				map2.forEach((pos, morphs) -> {
+
+					var lexes = lexByLemma.get(lemma);
+					if (lexes != null)
+					{
+						lexes.stream().filter(lex -> lex.getPartOfSpeech() == pos).forEach(lex -> {
+							var morphs2 = morphs.toArray(String[]::new);
+							lex.setMorphs(morphs2);
+						});
+					}
+				}));
 	}
 }
