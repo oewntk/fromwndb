@@ -487,7 +487,7 @@ public class Parser
 					{
 						lexes.stream().filter(lex -> lex.getPartOfSpeech() == pos).forEach(lex -> {
 							var morphs2 = morphs.toArray(String[]::new);
-							lex.setMorphs(morphs2);
+							lex.setForms(morphs2);
 						});
 					}
 				}));
