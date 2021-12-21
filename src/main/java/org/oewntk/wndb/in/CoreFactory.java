@@ -32,7 +32,7 @@ public class CoreFactory implements Supplier<CoreModel>
 		}
 		catch (IOException | ParsePojoException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(Tracing.psErr);
 			return null;
 		}
 	}
