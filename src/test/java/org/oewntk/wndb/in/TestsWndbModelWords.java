@@ -31,7 +31,7 @@ public class TestsWndbModelWords
 	@Test
 	public void testScanLexesForTestWordsSorted()
 	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, LibTestModel::makeSortedIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
+		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, LibTestModel::makeSortedIndexMapByKeyOEWN, testWords, peekTestWords, TestsWndbCommon.ps);
 	}
 
 	@Test

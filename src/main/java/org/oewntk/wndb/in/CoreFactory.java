@@ -37,15 +37,18 @@ public class CoreFactory implements Supplier<CoreModel>
 		}
 	}
 
-	static public CoreModel makeCoreModel(String[] args) throws IOException, ParsePojoException
+	static public CoreModel makeCoreModel(String dirPath) throws IOException, ParsePojoException
 	{
-		File inDir = new File(args[0]);
+		File inDir = new File(dirPath);
 		return new CoreFactory(inDir).get();
 	}
 
 	static public void main(String[] args) throws IOException, ParsePojoException
 	{
-		CoreModel model = makeCoreModel(args);
-		Tracing.psInfo.printf("[CoreModel] %s\n%s\n%s%n", model.getSource(), model.info(), model.counts());
+		for (String arg : args)
+		{
+			CoreModel model = makeCoreModel(arg);
+			Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n%n", model.getSource(), model.info(), model.counts());
+		}
 	}
 }

@@ -11,9 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.function.Supplier;
 
 public class Factory implements Supplier<Model>
@@ -56,16 +54,20 @@ public class Factory implements Supplier<Model>
 		}
 	}
 
-	static public Model makeModel(String[] args) throws IOException, ParsePojoException
+	static public Model makeModel(final String dirPath1, final String dirPath2) throws IOException, ParsePojoException
 	{
-		File inDir = new File(args[0]);
-		File inDir2 = new File(args[1]);
+		File inDir = new File(dirPath1);
+		File inDir2 = new File(dirPath2);
 		return new Factory(inDir, inDir2).get();
 	}
 
 	static public void main(String[] args) throws IOException, ParsePojoException
 	{
-		Model model = makeModel(args);
-		Tracing.psInfo.printf("[Model] %s\n%s\n%s%n", Arrays.toString(model.getSources()), model.info(), model.counts());
+		String dirPath2 = args[args.length - 1]; // last
+		for (int i = 0; i < args.length - 1; i++)
+		{
+			Model model = makeModel(args[i], dirPath2);
+			Tracing.psInfo.printf("[Model] %s%n%s%n%s%n%n", Arrays.toString(model.getSources()), model.info(), model.counts());
+		}
 	}
 }

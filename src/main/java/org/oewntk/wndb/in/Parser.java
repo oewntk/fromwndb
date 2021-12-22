@@ -5,6 +5,7 @@
 package org.oewntk.wndb.in;
 
 import org.oewntk.model.CoreModel;
+import org.oewntk.model.Key;
 import org.oewntk.model.Lex;
 import org.oewntk.parse.DataParser;
 import org.oewntk.parse.IndexParser;
@@ -188,7 +189,13 @@ public class Parser
 	/**
 	 * Lexical units
 	 */
-	private final Collection<Lex> lexes = new ArrayList<>();
+	private final Collection<Lex> lexes = new TreeSet<>(new Comparator<Lex>(){
+		@Override
+		public int compare(final Lex thisLex, final Lex thatLex)
+		{
+			return Key.OEWN.of(thisLex).compareTo(Key.OEWN.of(thatLex));
+		}
+	});
 
 	/**
 	 * Senses
@@ -462,10 +469,9 @@ public class Parser
 		IndexParser.parseAllIndexes(dir, indexConsumer);
 		MorphParser.parseAllMorphs(dir, morphConsumer);
 
-
-		psi.printf("%-50s %d%n", "synsets by id", synsets.size());
-		psi.printf("%-50s %d%n", "senses by id", senses.size());
-		psi.printf("%-50s %d%n", "lexes by lemma", lexes.size());
+		//psi.printf("%-50s %d%n", "synsets by id", synsets.size());
+		//psi.printf("%-50s %d%n", "senses by id", senses.size());
+		//psi.printf("%-50s %d%n", "lexes by lemma", lexes.size());
 		CoreModel model = new CoreModel(lexes, senses, synsets);
 		setMorphs(model, lemmaToMorphs);
 		return model;
