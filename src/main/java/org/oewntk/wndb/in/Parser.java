@@ -189,13 +189,7 @@ public class Parser
 	/**
 	 * Lexical units
 	 */
-	private final Collection<Lex> lexes = new TreeSet<>(new Comparator<Lex>(){
-		@Override
-		public int compare(final Lex thisLex, final Lex thatLex)
-		{
-			return Key.OEWN.of(thisLex).compareTo(Key.OEWN.of(thatLex));
-		}
-	});
+	private final Map<Key.OEWN, Lex> lexesByKey = new TreeMap<>();
 
 	/**
 	 * Senses
@@ -373,17 +367,17 @@ public class Parser
 								// type
 								String type = Character.toString(pos);
 
-								// lex with case-sensitive lemma
-								Lex lex = new org.oewntk.model.Lex(memberLemma, type, null);
-								lexes.add(lex);
-
+								// ver frames and adj positions
 								String[] verbFrames = pos != 'v' ? null : buildVerbFrames(synset, memberLemma);
 								String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
+
+								// collect lex
+								Key.OEWN key = Key.OEWN.from(memberLemma, type.charAt(0), null);
+								Lex lex = lexesByKey.computeIfAbsent(key, k->new org.oewntk.model.Lex(memberLemma, type, null));
 
 								// lex senses
 								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, relations);
 								lex.addSense(modelSense);
-
 								senses.add(modelSense);
 							});
 					i[0]++;
@@ -472,7 +466,7 @@ public class Parser
 		//psi.printf("%-50s %d%n", "synsets by id", synsets.size());
 		//psi.printf("%-50s %d%n", "senses by id", senses.size());
 		//psi.printf("%-50s %d%n", "lexes by lemma", lexes.size());
-		CoreModel model = new CoreModel(lexes, senses, synsets);
+		CoreModel model = new CoreModel(lexesByKey.values(), senses, synsets);
 		setMorphs(model, lemmaToMorphs);
 		return model;
 	}
