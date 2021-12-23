@@ -6,6 +6,7 @@ package org.oewntk.wndb.in;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oewntk.model.Key;
 import org.oewntk.model.LibTestModel;
 
 import java.util.Set;
@@ -25,13 +26,13 @@ public class TestsWndbModelWords
 	@Test
 	public void testScanLexesForTestWords()
 	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, LibTestModel::makeIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
+		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.OEWN::of, LibTestModel::makeIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testScanLexesForTestWordsSorted()
 	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, LibTestModel::makeSortedIndexMapByKeyOEWN, testWords, peekTestWords, TestsWndbCommon.ps);
+		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.OEWN::of, LibTestModel::makeSortedIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
 	}
 
 	@Test
