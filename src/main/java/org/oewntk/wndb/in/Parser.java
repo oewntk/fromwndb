@@ -315,7 +315,7 @@ public class Parser
 	// 3 - C O N S U M E   I N D E X   P O J O S
 	// from index.(noun|verb|adj|adv)
 
-	public static final Map<Integer, String> VERBFRAMENID2IDS = Stream.of(org.oewntk.model.VerbFrame.VALUES).collect(toMap(data -> (Integer) data[2], data -> (String) data[0]));
+	public static final Map<Integer, String> VERB_FRAME_NID_TO_IDS = Stream.of(org.oewntk.model.VerbFrame.VALUES).collect(toMap(data -> (Integer) data[2], data -> (String) data[0]));
 
 	//private static final Consumer<Index> indexConsumer = Tracing.psInfo::println;
 
@@ -372,7 +372,7 @@ public class Parser
 								String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
 
 								// collect lex
-								Key.OEWN key = Key.OEWN.from(memberLemma, type.charAt(0), null);
+								Key.OEWN key = Key.OEWN.from(memberLemma, type.charAt(0));
 								Lex lex = lexesByKey.computeIfAbsent(key, k->new org.oewntk.model.Lex(memberLemma, type, null));
 
 								// lex senses
@@ -420,7 +420,7 @@ public class Parser
 				.filter(vbf -> Arrays.stream(vbf.lemmas) //
 						.map(Lemma::toString) //
 						.anyMatch(vfm -> vfm.equals(lemma))) //
-				.map(vfr -> VERBFRAMENID2IDS.get(vfr.frameId)) //
+				.map(vfr -> VERB_FRAME_NID_TO_IDS.get(vfr.frameId)) //
 				.toArray(String[]::new);
 	}
 
@@ -463,9 +463,6 @@ public class Parser
 		IndexParser.parseAllIndexes(dir, indexConsumer);
 		MorphParser.parseAllMorphs(dir, morphConsumer);
 
-		//psi.printf("%-50s %d%n", "synsets by id", synsets.size());
-		//psi.printf("%-50s %d%n", "senses by id", senses.size());
-		//psi.printf("%-50s %d%n", "lexes by lemma", lexes.size());
 		CoreModel model = new CoreModel(lexesByKey.values(), senses, synsets);
 		setMorphs(model, lemmaToMorphs);
 		return model;

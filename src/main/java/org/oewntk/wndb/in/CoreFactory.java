@@ -37,13 +37,13 @@ public class CoreFactory implements Supplier<CoreModel>
 		}
 	}
 
-	static public CoreModel makeCoreModel(String dirPath) throws IOException, ParsePojoException
+	static public CoreModel makeCoreModel(String dirPath)
 	{
 		File inDir = new File(dirPath);
 		return new CoreFactory(inDir).get();
 	}
 
-	static public void main(String[] args) throws IOException, ParsePojoException
+	static public void main(String[] args)
 	{
 		for (String arg : args)
 		{

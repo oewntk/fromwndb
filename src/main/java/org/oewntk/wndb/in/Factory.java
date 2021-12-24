@@ -5,7 +5,6 @@
 package org.oewntk.wndb.in;
 
 import org.oewntk.model.*;
-import org.oewntk.pojos.ParsePojoException;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,14 +53,14 @@ public class Factory implements Supplier<Model>
 		}
 	}
 
-	static public Model makeModel(final String dirPath1, final String dirPath2) throws IOException, ParsePojoException
+	static public Model makeModel(final String dirPath1, final String dirPath2)
 	{
 		File inDir = new File(dirPath1);
 		File inDir2 = new File(dirPath2);
 		return new Factory(inDir, inDir2).get();
 	}
 
-	static public void main(String[] args) throws IOException, ParsePojoException
+	static public void main(String[] args)
 	{
 		String dirPath2 = args[args.length - 1]; // last
 		for (int i = 0; i < args.length - 1; i++)
