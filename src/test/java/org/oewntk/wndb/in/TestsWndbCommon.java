@@ -15,13 +15,7 @@ public class TestsWndbCommon
 {
 	private static final String source = System.getProperty("SOURCE");
 
-	static final PrintStream ps = !System.getProperties().containsKey("SILENT") ? System.out : new PrintStream(new OutputStream()
-	{
-		public void write(int b)
-		{
-			//DO NOTHING
-		}
-	});
+	static final PrintStream ps = !System.getProperties().containsKey("SILENT") ? Tracing.psInfo : Tracing.psNull;
 
 	static CoreModel model = null;
 
