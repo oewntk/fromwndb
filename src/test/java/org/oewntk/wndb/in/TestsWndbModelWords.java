@@ -26,13 +26,13 @@ public class TestsWndbModelWords
 	@Test
 	public void testScanLexesForTestWords()
 	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.OEWN::of, LibTestModel::makeIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
+		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.W_P_A::of_t, LibTestModel::makeIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
 	}
 
 	@Test
 	public void testScanLexesForTestWordsSorted()
 	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.OEWN::of, LibTestModel::makeSortedIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
+		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.W_P_A::of_t, LibTestModel::makeSortedIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
 	}
 
 	@Test

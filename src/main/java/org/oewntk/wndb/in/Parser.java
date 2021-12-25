@@ -189,7 +189,7 @@ public class Parser
 	/**
 	 * Lexical units
 	 */
-	private final Map<Key.OEWN, Lex> lexesByKey = new TreeMap<>();
+	private final Map<Key.W_P, Lex> lexesByKey = new TreeMap<>();
 
 	/**
 	 * Senses
@@ -372,7 +372,7 @@ public class Parser
 								String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
 
 								// collect lex
-								Key.OEWN key = Key.OEWN.from(memberLemma, type);
+								Key.W_P key = Key.W_P.from(memberLemma, type);
 								Lex lex = lexesByKey.computeIfAbsent(key, k -> new org.oewntk.model.Lex(memberLemma, Character.toString(type), null));
 
 								// lex senses

@@ -22,7 +22,7 @@ public class TestsWndbModelDuplicates
 		LibTestModelDuplicates.testDuplicatesForKeyOEWN(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test
 	public void testKeyPos()
 	{
 		LibTestModelDuplicates.testDuplicatesForKeyPos(TestsWndbCommon.model, TestsWndbCommon.ps);
