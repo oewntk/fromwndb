@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.oewntk.model.CoreModel;
 
 import java.io.File;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class TestsWndbCommon
