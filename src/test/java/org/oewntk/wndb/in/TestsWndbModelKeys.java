@@ -8,6 +8,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oewntk.model.LibTestModelKeys;
 
+import static org.junit.Assert.assertEquals;
+
 public class TestsWndbModelKeys
 {
 	@BeforeClass
@@ -17,69 +19,77 @@ public class TestsWndbModelKeys
 	}
 
 	@Test
-	public void testEarthMulti()
+	public void testEarthMultiNoPronunciation()
 	{
-		LibTestModelKeys.testEarthMulti(TestsWndbCommon.model, TestsWndbCommon.ps);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testEarthMono()
-	{
-		LibTestModelKeys.testEarthMono(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testEarthMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
 	@Test
-	public void testBaroqueMulti()
+	public void testEarthMonoNoPronunciation()
 	{
-		LibTestModelKeys.testBaroqueMulti(TestsWndbCommon.model, TestsWndbCommon.ps);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testBaroqueMono()
-	{
-		LibTestModelKeys.testBaroqueMono(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testEarthMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
 	@Test
-	public void testMobile()
+	public void testBaroqueMultiNoPronunciation()
 	{
-		LibTestModelKeys.testMobile(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testBaroqueMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(r[0], 3);
+		assertEquals(r[1], 1);
+		assertEquals(r[2], 3);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testBassDeep()
+	@Test
+	public void testBaroqueMonoNoPronunciation()
 	{
-		LibTestModelKeys.testBassDeep(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testBaroqueMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(r[0], 1);
+		assertEquals(r[1], 1);
+		assertEquals(r[2], 0);
+		assertEquals(r[3], 1);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testBassShallow()
+	@Test
+	public void testMobileNoPronunciation()
 	{
-		LibTestModelKeys.testBassShallow(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testMobileNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testRowDeep()
+	@Test
+	public void testBassMonoNoPronunciation()
 	{
-		LibTestModelKeys.testRowDeep(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testBassMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testRowShallow()
+	@Test
+	public void testBassMultiNoPronunciation()
 	{
-		LibTestModelKeys.testRowShallow(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testBassMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testCriticalDeep()
+	@Test
+	public void testRowMonoNoPronunciation()
 	{
-		LibTestModelKeys.testCriticalDeep(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testBassMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testCriticalPos()
+	@Test
+	public void testRowMultiNoPronunciation()
 	{
-		LibTestModelKeys.testCriticalPos(TestsWndbCommon.model, TestsWndbCommon.ps);
+		LibTestModelKeys.testBassMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+	}
+
+
+	@Test
+	public void testCriticalDeepNoPronunciation()
+	{
+		LibTestModelKeys.testCriticalDeepNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+	}
+
+	@Test
+	public void testCriticalPosNoPronunciation()
+	{
+		LibTestModelKeys.testCriticalPosNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
 	}
 
 	@Test
