@@ -365,15 +365,15 @@ public class Parser
 								assert sensekey != null : "no sensekey for " + k3;
 
 								// type
-								String type = Character.toString(pos);
+								char type = pos != 'a' ? pos : (sensekey.split("%")[1].startsWith("5") ? 's' :'a');
 
 								// ver frames and adj positions
 								String[] verbFrames = pos != 'v' ? null : buildVerbFrames(synset, memberLemma);
 								String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
 
 								// collect lex
-								Key.OEWN key = Key.OEWN.from(memberLemma, type.charAt(0));
-								Lex lex = lexesByKey.computeIfAbsent(key, k->new org.oewntk.model.Lex(memberLemma, type, null));
+								Key.OEWN key = Key.OEWN.from(memberLemma, type);
+								Lex lex = lexesByKey.computeIfAbsent(key, k -> new org.oewntk.model.Lex(memberLemma, Character.toString(type), null));
 
 								// lex senses
 								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, relations);
