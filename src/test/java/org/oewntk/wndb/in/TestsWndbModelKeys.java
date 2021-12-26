@@ -19,82 +19,135 @@ public class TestsWndbModelKeys
 	}
 
 	@Test
-	public void testEarthMultiNoPronunciation()
+	public void testMobile()
 	{
-		LibTestModelKeys.testEarthMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testMobileNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r[1]);
+		assertEquals(2, r[2]);
+		assertEquals(2, r[3]);
+		assertEquals(4, r.length);
 	}
 
 	@Test
-	public void testEarthMonoNoPronunciation()
+	public void testEarthMulti()
 	{
-		LibTestModelKeys.testEarthMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testEarthMulti(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r[1]);
+		assertEquals(2, r[2]);
+		assertEquals(2, r[3]);
+		assertEquals(4, r.length);
 	}
 
 	@Test
-	public void testBaroqueMultiNoPronunciation()
+	public void testEarthMono()
 	{
-		int[] r = LibTestModelKeys.testBaroqueMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
-		assertEquals(r[0], 3);
-		assertEquals(r[1], 1);
-		assertEquals(r[2], 3);
+		int[] r = LibTestModelKeys.testEarthMono(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r[1]);
+		assertEquals(1, r[2]);
+		assertEquals(1, r[3]);
+		assertEquals(4, r.length);
 	}
 
 	@Test
-	public void testBaroqueMonoNoPronunciation()
+	public void testBaroqueMulti()
 	{
-		int[] r = LibTestModelKeys.testBaroqueMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
-		assertEquals(r[0], 1);
-		assertEquals(r[1], 1);
-		assertEquals(r[2], 0);
-		assertEquals(r[3], 1);
+		int[] r = LibTestModelKeys.testBaroqueMulti(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r[1]);
+		assertEquals(2, r[2]);
+		assertEquals(2, r[3]);
+		assertEquals(1, r[4]);
+		assertEquals(2, r[5]);
+		assertEquals(3, r[6]);
+		assertEquals(3, r[7]);
+		assertEquals(0, r[8]);
+		assertEquals(1, r[9]);
+		assertEquals(1, r[10]);
+		assertEquals(1, r[11]);
+		assertEquals(0, r[12]);
+		assertEquals(0, r[13]);
+		assertEquals(0, r[14]);
+		assertEquals(0, r[14]);
+		assertEquals(16, r.length);
 	}
 
 	@Test
-	public void testMobileNoPronunciation()
+	public void testBaroqueMono()
 	{
-		LibTestModelKeys.testMobileNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testBaroqueMono(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r[1]);
+		assertEquals(1, r[2]);
+		assertEquals(1, r[3]);
+		assertEquals(1, r[4]);
+		assertEquals(1, r[5]);
+		assertEquals(1, r[6]);
+		assertEquals(1, r[7]);
+		assertEquals(0, r[8]);
+		assertEquals(1, r[9]);
+		assertEquals(1, r[10]);
+		assertEquals(1, r[11]);
+		assertEquals(0, r[12]);
+		assertEquals(0, r[13]);
+		assertEquals(0, r[14]);
+		assertEquals(0, r[14]);
+		assertEquals(16, r.length);
 	}
 
 	@Test
-	public void testBassMonoNoPronunciation()
+	public void testCriticalMulti()
 	{
-		LibTestModelKeys.testBassMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testCriticalMulti(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(2, r[1]);
+		assertEquals(1, r[2]);
+		assertEquals(0, r[3]);
+		assertEquals(4, r.length);
 	}
 
 	@Test
-	public void testBassMultiNoPronunciation()
+	public void testCriticalMono()
 	{
-		LibTestModelKeys.testBassMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testCriticalMono(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r[1]);
+		assertEquals(1, r[2]);
+		assertEquals(0, r[3]);
+		assertEquals(4, r.length);
 	}
 
 	@Test
-	public void testRowMonoNoPronunciation()
+	public void testBassDeep()
 	{
-		LibTestModelKeys.testBassMonoNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testBassNoPronunciationDeep(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r.length);
 	}
 
 	@Test
-	public void testRowMultiNoPronunciation()
+	public void testBassShallow()
 	{
-		LibTestModelKeys.testBassMultiNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
-	}
-
-
-	@Test
-	public void testCriticalDeepNoPronunciation()
-	{
-		LibTestModelKeys.testCriticalDeepNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testBassNoPronunciationShallow(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r.length);
 	}
 
 	@Test
-	public void testCriticalPosNoPronunciation()
+	public void testRowDeep()
 	{
-		LibTestModelKeys.testCriticalPosNoPronunciation(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testRowNoPronunciationDeep(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r.length);
 	}
 
 	@Test
-	public void testCriticalPWN()
+	public void testRowShallow()
 	{
-		LibTestModelKeys.testCriticalPWN(TestsWndbCommon.model, TestsWndbCommon.ps);
+		int[] r = LibTestModelKeys.testRowNoPronunciationShallow(TestsWndbCommon.model, TestsWndbCommon.ps);
+		assertEquals(1, r[0]);
+		assertEquals(1, r.length);
 	}
 }
