@@ -325,7 +325,7 @@ public class Parser
 		char pos = idx.pos.toChar();
 
 		// senses
-		final int[] i = {1};
+		final int[] i = {0};
 		Arrays.stream(idx.senses) //
 				.forEach(sense -> {
 
