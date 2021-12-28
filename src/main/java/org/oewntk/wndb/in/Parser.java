@@ -358,7 +358,7 @@ public class Parser
 								}
 
 								// retrieve relations
-								Map<String, List<String>> relations = buildSenseRelations(senseRelationsByKey.get(k4));
+								Map<String, Set<String>> relations = buildSenseRelations(senseRelationsByKey.get(k4));
 
 								// retrieve sensekey
 								String sensekey = sensekeyByKey.get(k3);
@@ -384,14 +384,14 @@ public class Parser
 				});
 	};
 
-	private Map<String, List<String>> buildSenseRelations(final Relation[] relations)
+	private Map<String, Set<String>> buildSenseRelations(final Relation[] relations)
 	{
 		if (relations != null && relations.length > 0)
 		{
 			return Arrays.stream(relations) //
 					.filter(r -> (r instanceof LexRelation)) //
 					.map(relation -> new SimpleEntry<>(relation.type.getName(), toSensekey((LexRelation) relation))) // (type: sensekey)
-					.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toList()))); // type: sensekeys
+					.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: sensekeys
 		}
 		return null;
 	}

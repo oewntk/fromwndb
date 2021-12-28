@@ -66,7 +66,7 @@ public class Factory implements Supplier<Model>
 		for (int i = 0; i < args.length - 1; i++)
 		{
 			Model model = makeModel(args[i], dirPath2);
-			Tracing.psInfo.printf("[Model] %s%n%s%n%s%n%n", Arrays.toString(model.getSources()), model.info(), model.counts());
+			Tracing.psInfo.printf("[Model] %s%n%s%n%s%n", Arrays.toString(model.getSources()), model.info(), model.counts());
 		}
 	}
 }
