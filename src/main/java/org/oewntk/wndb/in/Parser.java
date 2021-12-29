@@ -290,11 +290,14 @@ public class Parser
 	 */
 	private Map<String, Set<String>> buildSenseRelations(final String member, final Relation[] relations)
 	{
+		if(member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+			throw new IllegalArgumentException(member);
+
 		if (relations != null && relations.length > 0)
 		{
 			var map = Arrays.stream(relations) //
 					.filter(r -> (r instanceof LexRelation)) // discard non-lexical
-					.filter(lr -> member.equals(((LexRelation) lr).getFromWord().lemma.toString())) // discard relations whose from word is not target member
+					.filter(lr -> member.equalsIgnoreCase(((LexRelation) lr).getFromWord().lemma.toString())) // discard relations whose from word is not target member
 					//.peek(lr -> System.err.println(resolveToWord((LexRelation) lr)))
 					.map(relation -> new SimpleEntry<>(relation.type.getName(), toSensekey((LexRelation) relation))) // (type: sensekey)
 					.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: sensekeys
