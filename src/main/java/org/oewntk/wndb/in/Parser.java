@@ -160,14 +160,15 @@ public class Parser
 	 */
 	private static Map<String, Set<String>> buildSynsetRelations(final Relation[] relations)
 	{
-		if (relations == null || relations.length == 0)
+		if (relations != null && relations.length > 0)
 		{
-			return null;
+			var map = Arrays.stream(relations) //
+					.filter(r -> !(r instanceof LexRelation)) //
+					.map(relation -> new SimpleEntry<>(relation.type.getName(), relation.toSynsetId.toString())) // (type, synsetid)
+					.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: synsetids
+			return map.size() == 0 ? null : map;
 		}
-		return Arrays.stream(relations) //
-				.filter(r -> !(r instanceof LexRelation)) //
-				.map(relation -> new SimpleEntry<>(relation.type.getName(), relation.toSynsetId.toString())) // (type, synsetid)
-				.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: synsetids
+		return null;
 	}
 
 	// 2 - C O N S U M E   S E N S E   P O J O S
@@ -245,9 +246,9 @@ public class Parser
 								// retrieve tag count
 								var tagCnt = tagCntByKey.get(key);
 
-								// retrieve relations
-								var senseRelations2 = relationsByKey.get(key);
-								Map<String, Set<String>> relations = buildSenseRelations(senseRelations2);
+								// retrieve relations, build sense relations
+								var relations = relationsByKey.get(key);
+								Map<String, Set<String>> senseRelations = buildSenseRelations(member.toString(), relations);
 
 								// retrieve sensekey
 								String sensekey = sensekeyByKey.get(key);
@@ -264,13 +265,17 @@ public class Parser
 								org.oewntk.model.Key.W_P wpKey = org.oewntk.model.Key.W_P.from(memberLemma, type);
 								Lex lex = lexesByKey.computeIfAbsent(wpKey, k -> new org.oewntk.model.Lex(memberLemma, Character.toString(type), null));
 
-								// lex senses
-								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, relations);
+								// senses
+								org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations);
 								if (tagCnt.tagCount != 0)
 								{
 									modelSense.setTagCount(new org.oewntk.model.TagCount(tagCnt.senseNum, tagCnt.tagCount));
 								}
+
+								// collect sense in lex
 								lex.addSense(modelSense);
+
+								// collect in senses
 								senses.add(modelSense);
 							});
 					i[0]++;
@@ -283,20 +288,23 @@ public class Parser
 	 * @param relations relations including synset relations
 	 * @return sense relations
 	 */
-	private Map<String, Set<String>> buildSenseRelations(final Relation[] relations)
+	private Map<String, Set<String>> buildSenseRelations(final String member, final Relation[] relations)
 	{
 		if (relations != null && relations.length > 0)
 		{
-			return Arrays.stream(relations) //
-					.filter(r -> (r instanceof LexRelation)) //
+			var map = Arrays.stream(relations) //
+					.filter(r -> (r instanceof LexRelation)) // discard non-lexical
+					.filter(lr -> member.equals(((LexRelation) lr).getFromWord().lemma.toString())) // discard relations whose from word is not target member
+					//.peek(lr -> System.err.println(resolveToWord((LexRelation) lr)))
 					.map(relation -> new SimpleEntry<>(relation.type.getName(), toSensekey((LexRelation) relation))) // (type: sensekey)
 					.collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: sensekeys
+			return map.size() == 0 ? null : map;
 		}
 		return null;
 	}
 
 	/**
-	 * Lex relation to target sensekey
+	 * Resolve target sensekey of a lex relation
 	 *
 	 * @param lr lexical relation
 	 * @return target sensekey
@@ -304,13 +312,25 @@ public class Parser
 	private String toSensekey(final LexRelation lr)
 	{
 		SynsetId toSynsetId = lr.getToSynsetId();
-		Synset toSynset = pojoSynsetsById.get(toSynsetId);
-		LemmaRef toWordRef = lr.getToWord();
-		String toWord = toWordRef.resolve(toSynset).toString();
+		String toWord = resolveToWord(lr);
 		Key key = new Key(toWord, toSynsetId.getPos().toChar(), toSynsetId.getOffset());
 		String sensekey = sensekeyByKey.get(key);
 		assert sensekey != null : "no sensekey for " + key;
 		return sensekey;
+	}
+
+	/**
+	 * Resolve target word of a lex relation
+	 *
+	 * @param lr lexical relation
+	 * @return target word
+	 */
+	private String resolveToWord(final LexRelation lr)
+	{
+		SynsetId toSynsetId = lr.getToSynsetId();
+		Synset toSynset = pojoSynsetsById.get(toSynsetId);
+		LemmaRef toWordRef = lr.getToWord();
+		return toWordRef.resolve(toSynset).toString();
 	}
 
 	/**
