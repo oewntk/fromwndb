@@ -290,8 +290,10 @@ public class Parser
 	 */
 	private Map<String, Set<String>> buildSenseRelations(final String member, final Relation[] relations)
 	{
-		if(member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+		if (member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+		{
 			throw new IllegalArgumentException(member);
+		}
 
 		if (relations != null && relations.length > 0)
 		{
@@ -437,7 +439,8 @@ public class Parser
 		IndexParser.parseAllIndexes(dir, indexConsumer);
 		MorphParser.parseAllMorphs(dir, morphConsumer);
 
-		CoreModel model = new CoreModel(lexesByKey.values(), senses, synsets);
+		Collection<Lex> lexes = new ArrayList<>(lexesByKey.values()); // TreeMap.Values are not serializable
+		CoreModel model = new CoreModel(lexes, senses, synsets);
 		setMorphs(model, lemmaToMorphs);
 		return model;
 	}
