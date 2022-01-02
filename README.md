@@ -9,7 +9,7 @@
 
 This reads a model from WNDB files.
 
-Project [fromwndb](https://github.com/x-englishwordnet/fromwndb)
+Project [fromwndb](https://github.com/oewntk/fromwndb)
 
 ## Dataflow
 
@@ -17,6 +17,6 @@ Project [fromwndb](https://github.com/x-englishwordnet/fromwndb)
 
 ## Maven Central
 
-		<groupId>io.github.x-englishwordnet</groupId>
+		<groupId>io.github.oewntk</groupId>
 		<artifactId>fromwndb</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
