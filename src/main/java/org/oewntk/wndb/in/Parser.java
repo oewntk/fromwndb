@@ -124,11 +124,6 @@ public class Parser
 	 */
 	private final Map<Key, TagCnt> tagCntByKey = new HashMap<>();
 
-	/**
-	 * Map frame id (via, ...) to numeric id
-	 */
-	private static final Map<Integer, String> VERB_FRAME_NID_TO_IDS = Stream.of(org.oewntk.model.VerbFrame.VALUES).collect(toMap(data -> (Integer) data[2], data -> (String) data[0]));
-
 	// 1 - C O N S U M E   S Y N S E T   P O J O S
 	// from data.(noun|verb|adj|adv)
 
@@ -337,6 +332,54 @@ public class Parser
 		LemmaRef toWordRef = lr.getToWord();
 		return toWordRef.resolve(toSynset).toString();
 	}
+
+	// name, frame, frameid
+	public static final Object[][] VERBFRAME_VALUES = new Object[][]{ //
+			{"vii", 1}, //
+			{"via", 2}, //
+			{"nonreferential", 3}, //
+			{"vii-pp", 4}, //
+			{"vtii-adj", 5}, //
+			{"vii-adj", 6}, //
+			{"via-adj", 7}, //
+			{"vtai", 8}, //
+			{"vtaa", 9}, //
+			{"vtia", 10}, //
+			{"vtii", 11}, //
+			{"vii-to", 12}, //
+			{"via-on-inanim", 13}, //
+			{"ditransitive", 14}, //
+			{"vtai-to", 15}, //
+			{"vtai-from", 16}, //
+			{"vtaa-with", 17}, //
+			{"vtaa-of", 18}, //
+			{"vtai-on", 19}, //
+			{"vtaa-pp", 20}, //
+			{"vtai-pp", 21}, //
+			{"via-pp", 22}, //
+			{"vibody", 23}, //
+			{"vtaa-to-inf", 24}, //
+			{"vtaa-inf", 25}, //
+			{"via-that", 26}, //
+			{"via-to", 27}, //
+			{"via-to-inf", 28}, //
+			{"via-whether-inf", 29}, //
+			{"vtaa-into-ger", 30}, //
+			{"vtai-with", 31}, //
+			{"via-inf", 32}, //
+			{"via-ger", 33}, //
+			{"nonreferential-sent", 34}, //
+			{"vii-inf", 35}, //
+			{"via-at", 36}, //
+			{"via-for", 37}, //
+			{"via-on-anim", 38}, //
+			{"via-out-of", 39}, //
+	};
+
+	/**
+	 * Map frame numeric id to id (via, ...)
+	 */
+	public static final Map<Integer, String> VERB_FRAME_NID_TO_IDS = Stream.of(VERBFRAME_VALUES).collect(toMap(data -> (Integer) data[1], data -> (String) data[0]));
 
 	/**
 	 * Build verb frame ids
