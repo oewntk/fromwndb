@@ -11,15 +11,29 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Verb frames parser
+ */
 public class VerbFrameParser
 {
 	private final File inDir;
 
+	/**
+	 * Constructor
+	 *
+	 * @param inDir extra WNDB dir
+	 */
 	public VerbFrameParser(final File inDir)
 	{
 		this.inDir = inDir;
 	}
 
+	/**
+	 * Parse verb frames
+	 *
+	 * @return collection of verb frames
+	 * @throws IOException io exception
+	 */
 	public Collection<VerbFrame> parse() throws IOException
 	{
 		Collection<VerbFrame> result = new ArrayList<>();
@@ -27,6 +41,13 @@ public class VerbFrameParser
 		return result;
 	}
 
+	/**
+	 * Parse verb frames
+	 *
+	 * @param file       file
+	 * @param verbFrames accumulator of verb frames
+	 * @throws IOException io exception
+	 */
 	private void parseVerbFrames(final File file, final Collection<VerbFrame> verbFrames) throws IOException
 	{
 		// iterate on lines

@@ -11,10 +11,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+/**
+ * Core model factory
+ */
 public class CoreFactory implements Supplier<CoreModel>
 {
 	private final File inDir;
 
+	/**
+	 * Constructor
+	 *
+	 * @param inDir WNDB dir
+	 */
 	public CoreFactory(final File inDir)
 	{
 		this.inDir = inDir;
@@ -37,12 +45,23 @@ public class CoreFactory implements Supplier<CoreModel>
 		}
 	}
 
+	/**
+	 * Make core model
+	 *
+	 * @param dirPath WNDB dir path
+	 * @return core model
+	 */
 	static public CoreModel makeCoreModel(String dirPath)
 	{
 		File inDir = new File(dirPath);
 		return new CoreFactory(inDir).get();
 	}
 
+	/**
+	 * Main
+	 *
+	 * @param args cmd-line args
+	 */
 	static public void main(String[] args)
 	{
 		for (String arg : args)

@@ -13,15 +13,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+/**
+ * Sense-to-tag_count parser
+ */
 public class SenseToTagCountsParser
 {
 	private final File inDir;
 
+	/**
+	 * Constructor
+	 *
+	 * @param inDir extra WNDB dir
+	 */
 	public SenseToTagCountsParser(final File inDir)
 	{
 		this.inDir = inDir;
 	}
 
+	/**
+	 * Parse tag counts per sense
+	 *
+	 * @return collection of sensekey-tag_count pairs
+	 * @throws IOException io exception
+	 */
 	public Collection<Entry<String, TagCount>> parse() throws IOException
 	{
 		Collection<Entry<String, TagCount>> result = new ArrayList<>();
@@ -29,7 +43,14 @@ public class SenseToTagCountsParser
 		return result;
 	}
 
-	public static void parseTagCounts(File file, Collection<Entry<String, TagCount>> entries) throws IOException
+	/**
+	 * Parse tag counts per sense
+	 *
+	 * @param file    file
+	 * @param entries sensekey-tag_count pairs accumulator
+	 * @throws IOException io exception
+	 */
+	private static void parseTagCounts(File file, Collection<Entry<String, TagCount>> entries) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))

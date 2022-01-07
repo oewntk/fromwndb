@@ -11,15 +11,29 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Verb templates parser
+ */
 public class VerbTemplateParser
 {
 	private final File inDir;
 
+	/**
+	 * Constructor
+	 *
+	 * @param inDir extra WNDB dir
+	 */
 	public VerbTemplateParser(final File inDir)
 	{
 		this.inDir = inDir;
 	}
 
+	/**
+	 * Parse verb templates
+	 *
+	 * @return collection of verb templates
+	 * @throws IOException io exception
+	 */
 	public Collection<VerbTemplate> parse() throws IOException
 	{
 		Collection<VerbTemplate> result = new ArrayList<>();
@@ -27,7 +41,14 @@ public class VerbTemplateParser
 		return result;
 	}
 
-	private static void parseVerbTemplates(File file, Collection<VerbTemplate> verbTemplates) throws IOException
+	/**
+	 * Parse verb templates
+	 *
+	 * @param file          file
+	 * @param verbTemplates accumulator of verb templates
+	 * @throws IOException io exception
+	 */
+	private static void parseVerbTemplates(final File file, final Collection<VerbTemplate> verbTemplates) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))

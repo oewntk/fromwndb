@@ -23,6 +23,9 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
+/**
+ * WNDB parser
+ */
 public class Parser
 {
 	// PRINT STREAMS
@@ -334,7 +337,7 @@ public class Parser
 	}
 
 	// name, frame, frameid
-	public static final Object[][] VERBFRAME_VALUES = new Object[][]{ //
+	private static final Object[][] VERBFRAME_VALUES = new Object[][]{ //
 			{"vii", 1}, //
 			{"via", 2}, //
 			{"nonreferential", 3}, //
@@ -379,7 +382,7 @@ public class Parser
 	/**
 	 * Map frame numeric id to id (via, ...)
 	 */
-	public static final Map<Integer, String> VERB_FRAME_NID_TO_IDS = Stream.of(VERBFRAME_VALUES).collect(toMap(data -> (Integer) data[1], data -> (String) data[0]));
+	private static final Map<Integer, String> VERB_FRAME_NID_TO_IDS = Stream.of(VERBFRAME_VALUES).collect(toMap(data -> (Integer) data[1], data -> (String) data[0]));
 
 	/**
 	 * Build verb frame ids

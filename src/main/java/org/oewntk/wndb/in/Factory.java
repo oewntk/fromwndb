@@ -13,12 +13,21 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+/**
+ * Model factory
+ */
 public class Factory implements Supplier<Model>
 {
 	private final File inDir;
 
 	private final File inDir2;
 
+	/**
+	 * Constructor
+	 *
+	 * @param inDir  WNDB dir
+	 * @param inDir2 extra WNDB dir
+	 */
 	public Factory(final File inDir, final File inDir2)
 	{
 		this.inDir = inDir;
@@ -53,11 +62,25 @@ public class Factory implements Supplier<Model>
 		}
 	}
 
+	/**
+	 * Make model
+	 *
+	 * @param inDir  WNDB dir
+	 * @param inDir2 extra WNDB dir
+	 * @return model
+	 */
 	static public Model makeModel(File inDir, File inDir2)
 	{
 		return new Factory(inDir, inDir2).get();
 	}
 
+	/**
+	 * Make model
+	 *
+	 * @param dirPath1 WNDB dir path
+	 * @param dirPath2 extra WNDB dir path
+	 * @return core model
+	 */
 	static public Model makeModel(final String dirPath1, final String dirPath2)
 	{
 		File inDir = new File(dirPath1);
@@ -65,6 +88,12 @@ public class Factory implements Supplier<Model>
 		return new Factory(inDir, inDir2).get();
 	}
 
+	/**
+	 * Make model
+	 *
+	 * @param args cmd-line args
+	 * @return core model
+	 */
 	static public Model makeModel(String[] args)
 	{
 		File inDir = new File(args[0]);
@@ -72,6 +101,11 @@ public class Factory implements Supplier<Model>
 		return makeModel(inDir, inDir2);
 	}
 
+	/**
+	 * Main
+	 *
+	 * @param args cmd-line args
+	 */
 	static public void main(String[] args)
 	{
 		String dirPath2 = args[args.length - 1]; // last

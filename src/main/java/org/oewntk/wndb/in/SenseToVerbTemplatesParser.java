@@ -11,15 +11,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+/**
+ * Sense-to-verb_templates parser
+ */
 public class SenseToVerbTemplatesParser
 {
 	private final File inDir;
 
+	/**
+	 * Constructor
+	 *
+	 * @param inDir extra WNDB dir
+	 */
 	public SenseToVerbTemplatesParser(final File inDir)
 	{
 		this.inDir = inDir;
 	}
 
+	/**
+	 * Parse verb templates per sense
+	 *
+	 * @return collection of sensekey-verb_templates_ids pairs
+	 * @throws IOException io exception
+	 */
 	public Collection<Entry<String, int[]>> parse() throws IOException
 	{
 		Collection<Entry<String, int[]>> result = new ArrayList<>();
@@ -27,7 +41,14 @@ public class SenseToVerbTemplatesParser
 		return result;
 	}
 
-	public static void parseVerbTemplates(File file, Collection<Entry<String, int[]>> entries) throws IOException
+	/**
+	 * Parse verb templates per sense
+	 *
+	 * @param file    file
+	 * @param entries accumulator of sensekey-verb_templates_ids pairs
+	 * @throws IOException io exception
+	 */
+	private static void parseVerbTemplates(File file, Collection<Entry<String, int[]>> entries) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
