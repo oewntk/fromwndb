@@ -28,6 +28,8 @@ import static java.util.stream.Collectors.*;
  */
 public class Parser
 {
+	private static final boolean LOG_TAGCOUNT_MERGE = false;
+
 	// PRINT STREAMS
 
 	/**
@@ -196,7 +198,10 @@ public class Parser
 			// merge
 			var tagCnt2 = new TagCnt(Math.min(tagCnt.senseNum, existingTagCnt.senseNum), Math.max(tagCnt.tagCount, existingTagCnt.tagCount));
 			tagCntByKey.put(key, tagCnt2);
-			psi.printf("Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2);
+			if (LOG_TAGCOUNT_MERGE)
+			{
+				psi.printf("Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2);
+			}
 		}
 
 		// store relations by key
