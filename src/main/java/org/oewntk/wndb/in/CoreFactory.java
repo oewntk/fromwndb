@@ -60,7 +60,7 @@ public class CoreFactory implements Supplier<CoreModel>
 	/**
 	 * Main
 	 *
-	 * @param args cmd-line args
+	 * @param args command-line arguments
 	 */
 	static public void main(String[] args)
 	{

@@ -91,7 +91,7 @@ public class Factory implements Supplier<Model>
 	/**
 	 * Make model
 	 *
-	 * @param args cmd-line args
+	 * @param args command-line arguments
 	 * @return core model
 	 */
 	static public Model makeModel(String[] args)
@@ -104,7 +104,7 @@ public class Factory implements Supplier<Model>
 	/**
 	 * Main
 	 *
-	 * @param args cmd-line args
+	 * @param args command-line arguments
 	 */
 	static public void main(String[] args)
 	{
