@@ -449,7 +449,7 @@ public class Parser
 					var lexes = lexByLemma.get(lemma);
 					if (lexes != null)
 					{
-						lexes.stream().filter(lex -> lex.getPartOfSpeech() == pos).forEach(lex -> {
+						lexes.stream().filter(lex -> lex.partOfSpeech == pos).forEach(lex -> {
 							var morphs2 = morphs.toArray(String[]::new);
 							lex.setForms(morphs2);
 						});
