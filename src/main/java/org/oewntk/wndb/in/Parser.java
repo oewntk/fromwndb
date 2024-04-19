@@ -117,12 +117,12 @@ public class Parser
     /**
      * Sensekey by key
      */
-    private final Map<Key, String> sensekeyByKey = new HashMap<>();
+    private final Map<? extends Key, String> sensekeyByKey = new HashMap<>();
 
     /**
      * Sense relations by key
      */
-    private final Map<Key, Relation[]> relationsByKey = new HashMap<>();
+    private final Map<? extends Key, Relation[]> relationsByKey = new HashMap<>();
 
     /**
      * TagCnt by key representing sense
