@@ -49,10 +49,10 @@ public class Factory implements Supplier<Model>
             // verb frames and templates
             Collection<VerbFrame> verbFramesById = new VerbFrameParser(inDir2).parse();
             Collection<VerbTemplate> verbTemplatesById = new VerbTemplateParser(inDir2).parse();
-            Collection<Pair<String, int[]>> senseToVerbTemplates = new SenseToVerbTemplatesParser(inDir).parse();
+            Collection<Pair<String, Integer[]>> senseToVerbTemplates = new SenseToVerbTemplatesParser(inDir).parse();
 
             // tag counts
-            Collection<Entry<String, TagCount>> senseToTagCounts = new SenseToTagCountsParser(inDir).parse();
+            Collection<Pair<String, TagCount>> senseToTagCounts = new SenseToTagCountsParser(inDir).parse();
 
             return new Model(coreModel, verbFramesById, verbTemplatesById, senseToVerbTemplates, senseToTagCounts).setSources(inDir, inDir2);
         }

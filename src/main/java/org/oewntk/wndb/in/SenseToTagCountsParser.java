@@ -4,14 +4,13 @@
 
 package org.oewntk.wndb.in;
 
+import kotlin.Pair;
 import org.oewntk.model.TagCount;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 /**
  * Sense-to-tag_count parser
@@ -36,9 +35,9 @@ public class SenseToTagCountsParser
 	 * @return collection of sensekey-tag_count pairs
 	 * @throws IOException io exception
 	 */
-	public Collection<Entry<String, TagCount>> parse() throws IOException
+	public Collection<Pair<String, TagCount>> parse() throws IOException
 	{
-		Collection<Entry<String, TagCount>> result = new ArrayList<>();
+		Collection<Pair<String, TagCount>> result = new ArrayList<>();
 		parseTagCounts(new File(inDir, "cntlist.rev"), result);
 		return result;
 	}
@@ -50,7 +49,7 @@ public class SenseToTagCountsParser
 	 * @param entries sensekey-tag_count pairs accumulator
 	 * @throws IOException io exception
 	 */
-	private static void parseTagCounts(File file, Collection<Entry<String, TagCount>> entries) throws IOException
+	private static void parseTagCounts(File file, Collection<Pair<String, TagCount>> entries) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
@@ -73,7 +72,7 @@ public class SenseToTagCountsParser
 					int senseNum = Integer.parseInt(fields[1]);
 					int tagCnt = Integer.parseInt(fields[2]);
 
-					entries.add(new SimpleEntry<>(sensekey, new TagCount(senseNum, tagCnt)));
+					entries.add(new Pair<>(sensekey, new TagCount(senseNum, tagCnt)));
 				}
 				catch (final RuntimeException e)
 				{

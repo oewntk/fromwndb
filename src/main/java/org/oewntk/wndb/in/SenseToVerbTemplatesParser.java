@@ -4,12 +4,12 @@
 
 package org.oewntk.wndb.in;
 
+import kotlin.Pair;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 /**
  * Sense-to-verb_templates parser
@@ -34,9 +34,9 @@ public class SenseToVerbTemplatesParser
 	 * @return collection of sensekey-verb_templates_ids pairs
 	 * @throws IOException io exception
 	 */
-	public Collection<Entry<String, int[]>> parse() throws IOException
+	public Collection<Pair<String, Integer[]>> parse() throws IOException
 	{
-		Collection<Entry<String, int[]>> result = new ArrayList<>();
+		Collection<Pair<String, Integer[]>> result = new ArrayList<>();
 		parseVerbTemplates(new File(inDir, "sentidx.vrb"), result);
 		return result;
 	}
@@ -48,7 +48,7 @@ public class SenseToVerbTemplatesParser
 	 * @param entries accumulator of sensekey-verb_templates_ids pairs
 	 * @throws IOException io exception
 	 */
-	private static void parseVerbTemplates(File file, Collection<Entry<String, int[]>> entries) throws IOException
+	private static void parseVerbTemplates(File file, Collection<Pair<String, Integer[]>> entries) throws IOException
 	{
 		// iterate on lines
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
@@ -67,12 +67,12 @@ public class SenseToVerbTemplatesParser
 				{
 					String[] fields = line.split("[\\s,]+");
 					String sensekey = fields[0];
-					int[] templateIds = new int[fields.length - 1];
+					Integer[] templateIds = new Integer[fields.length - 1];
 					for (int i = 1; i < fields.length; i++)
 					{
 						templateIds[i - 1] = Integer.parseInt(fields[i]);
 					}
-					entries.add(new SimpleEntry<>(sensekey, templateIds));
+					entries.add(new Pair<>(sensekey, templateIds));
 				}
 				catch (final RuntimeException e)
 				{
