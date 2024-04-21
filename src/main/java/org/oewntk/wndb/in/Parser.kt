@@ -107,10 +107,10 @@ class Parser(
 	 * Synset consumer
 	 */
 	private val synsetConsumer = Consumer<Synset> { synset: Synset ->
-		val synsetId = synset.synsetId.toString()
+		val synsetId = synset.id.toString()
 		val type = synset.type.toChar()
-		val domain = synset.domain.getName()
-		val members = synset.lemmas
+		val domain = synset.domain.name
+		val members = synset.cSLemmas
 			.map { it.toString() }
 			.toTypedArray()
 		val definitions = arrayOf(synset.gloss.definition)
@@ -120,7 +120,7 @@ class Parser(
 
 		val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations)
 		synsets.add(modelSynset)
-		pojoSynsetsById[synset.synsetId] = synset
+		pojoSynsetsById[synset.id] = synset
 	}
 
 	// 2 - C O N S U M E   S E N S E   P O J O S
@@ -156,8 +156,9 @@ class Parser(
 
 		// store relations by key
 		val synset = pojoSynsetsById[sense.synsetId]
-		/* var r =*/
-		relationsByKey[key] = synset!!.relations
+		synset?.relations.let {
+			relationsByKey[key] = it!!
+		}
 	}
 
 	// 3 - C O N S U M E   I N D E X   P O J O S
@@ -184,7 +185,7 @@ class Parser(
 				// case-sensitive lemma
 				val synsetId = sense.synsetId
 				val synset = pojoSynsetsById[synsetId]
-				val members = synset!!.lemmas
+				val members = synset!!.cSLemmas
 				Arrays.stream(members) //
 					.filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) } //
 					.forEach { member: LemmaCS ->
@@ -240,7 +241,7 @@ class Parser(
 		if (!relations.isNullOrEmpty()) {
 			val map = relations
 				.filterIsInstance<LexRelation>() // discard non-lexical
-				.filter { member.equals((it).getFromWord().lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
+				.filter { member.equals((it).fromWord.lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
 				.map { it.type.name to toSensekey(it) } // (type: sensekey)
 				.groupBy { it.first }
 				.mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: sensekeys
@@ -257,7 +258,7 @@ class Parser(
 	 * @return target sensekey
 	 */
 	private fun toSensekey(lr: LexRelation): String {
-		val toSynsetId = lr.getToSynsetId()
+		val toSynsetId = lr.toSynsetId
 		val toWord = resolveToWord(lr)
 		val key = Key(toWord, toSynsetId.pos.toChar(), toSynsetId.offset)
 		val sensekey = checkNotNull(sensekeyByKey[key]) { "no sensekey for $key" }
@@ -271,8 +272,8 @@ class Parser(
 	 * @return target word
 	 */
 	private fun resolveToWord(lr: LexRelation): String {
-		val toSynsetId = lr.getToSynsetId()
-		val toSynset = pojoSynsetsById[toSynsetId]
+		val toSynsetId = lr.toSynsetId
+		val toSynset = pojoSynsetsById[toSynsetId]!!
 		val toWordRef = lr.toWord
 		return toWordRef.resolve(toSynset).toString()
 	}
@@ -363,10 +364,10 @@ class Parser(
 		 */
 		private val psi: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psInfo else Tracing.psNull
 
-		/**
-		 * Error print stream
-		 */
-		private val pse: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psErr else Tracing.psNull
+		// /**
+		//  * Error print stream
+		//  */
+		// private val pse: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psErr else Tracing.psNull
 
 		/**
 		 * Build synset relations
