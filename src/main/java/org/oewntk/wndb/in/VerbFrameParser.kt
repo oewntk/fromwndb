@@ -1,44 +1,31 @@
 /*
  * Copyright (c) 2021. Bernard Bou.
  */
+package org.oewntk.wndb.`in`
 
-package org.oewntk.wndb.in;
-
-import org.oewntk.model.VerbFrame;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.oewntk.model.VerbFrame
+import java.io.*
+import java.nio.charset.StandardCharsets
 
 /**
  * Verb frames parser
+ *
+ * @property inDir extra WNDB dir
  */
-public class VerbFrameParser
-{
-	private final File inDir;
-
-	/**
-	 * Constructor
-	 *
-	 * @param inDir extra WNDB dir
-	 */
-	public VerbFrameParser(final File inDir)
-	{
-		this.inDir = inDir;
-	}
-
+class VerbFrameParser(
+	private val inDir: File
+) {
 	/**
 	 * Parse verb frames
 	 *
 	 * @return collection of verb frames
 	 * @throws IOException io exception
 	 */
-	public Collection<VerbFrame> parse() throws IOException
-	{
-		Collection<VerbFrame> result = new ArrayList<>();
-		parseVerbFrames(new File(inDir, "verbFrames.txt"), result);
-		return result;
+	@Throws(IOException::class)
+	fun parse(): Collection<VerbFrame> {
+		val result: MutableCollection<VerbFrame> = ArrayList()
+		parseVerbFrames(File(inDir, "verbFrames.txt"), result)
+		return result
 	}
 
 	/**
@@ -48,31 +35,25 @@ public class VerbFrameParser
 	 * @param verbFrames accumulator of verb frames
 	 * @throws IOException io exception
 	 */
-	private void parseVerbFrames(final File file, final Collection<VerbFrame> verbFrames) throws IOException
-	{
+	@Throws(IOException::class)
+	private fun parseVerbFrames(file: File, verbFrames: MutableCollection<VerbFrame>) {
 		// iterate on lines
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
-		{
-			int lineCount = 0;
-			String line;
-			while ((line = reader.readLine()) != null)
-			{
-				lineCount++;
-				if (line.isEmpty() || line.charAt(0) == ' ')
-				{
-					continue;
+		BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
+			var lineCount = 0
+			var line: String
+			while ((reader.readLine().also { line = it }) != null) {
+				lineCount++
+				if (line.isEmpty() || line[0] == ' ') {
+					continue
 				}
 
-				try
-				{
-					String[] fields = line.split(":");
-					String field1 = fields[0];
-					String field2 = fields[1].trim();
-					verbFrames.add(new VerbFrame(field1, field2));
-				}
-				catch (final RuntimeException e)
-				{
-					Tracing.psErr.println("[E] verb frame at line " + lineCount + " " + e);
+				try {
+					val fields = line.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+					val field1 = fields[0]
+					val field2 = fields[1].trim { it <= ' ' }
+					verbFrames.add(VerbFrame(field1, field2))
+				} catch (e: RuntimeException) {
+					Tracing.psErr.println("[E] verb frame at line $lineCount $e")
 				}
 			}
 		}

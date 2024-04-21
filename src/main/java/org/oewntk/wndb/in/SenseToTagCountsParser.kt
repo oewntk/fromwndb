@@ -1,82 +1,65 @@
 /*
  * Copyright (c) 2021. Bernard Bou.
  */
+package org.oewntk.wndb.`in`
 
-package org.oewntk.wndb.in;
-
-import kotlin.Pair;
-import org.oewntk.model.TagCount;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
+import org.oewntk.model.TagCount
+import java.io.*
+import java.nio.charset.StandardCharsets
 
 /**
  * Sense-to-tag_count parser
+ *
+ * @property inDir extra WNDB dir
  */
-public class SenseToTagCountsParser
-{
-	private final File inDir;
-
-	/**
-	 * Constructor
-	 *
-	 * @param inDir extra WNDB dir
-	 */
-	public SenseToTagCountsParser(final File inDir)
-	{
-		this.inDir = inDir;
-	}
-
+class SenseToTagCountsParser(
+	private val inDir: File
+) {
 	/**
 	 * Parse tag counts per sense
 	 *
 	 * @return collection of sensekey-tag_count pairs
 	 * @throws IOException io exception
 	 */
-	public Collection<Pair<String, TagCount>> parse() throws IOException
-	{
-		Collection<Pair<String, TagCount>> result = new ArrayList<>();
-		parseTagCounts(new File(inDir, "cntlist.rev"), result);
-		return result;
+	@Throws(IOException::class)
+	fun parse(): Collection<Pair<String, TagCount>> {
+		val result: MutableCollection<Pair<String, TagCount>> = ArrayList()
+		parseTagCounts(File(inDir, "cntlist.rev"), result)
+		return result
 	}
 
-	/**
-	 * Parse tag counts per sense
-	 *
-	 * @param file    file
-	 * @param entries sensekey-tag_count pairs accumulator
-	 * @throws IOException io exception
-	 */
-	private static void parseTagCounts(File file, Collection<Pair<String, TagCount>> entries) throws IOException
-	{
-		// iterate on lines
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)))
-		{
-			int lineCount = 0;
-			String line;
-			while ((line = reader.readLine()) != null)
-			{
-				lineCount++;
-				if (line.isEmpty() || line.charAt(0) == ' ')
-				{
-					continue;
-				}
+	companion object {
 
-				try
-				{
-					String[] fields = line.split("\\s+");
-					String sensekey = fields[0];
-					// int sensenum = Integer.parseInt(fields[1]);
-					int senseNum = Integer.parseInt(fields[1]);
-					int tagCnt = Integer.parseInt(fields[2]);
+		/**
+		 * Parse tag counts per sense
+		 *
+		 * @param file    file
+		 * @param entries sensekey-tag_count pairs accumulator
+		 * @throws IOException io exception
+		 */
+		@Throws(IOException::class)
+		private fun parseTagCounts(file: File, entries: MutableCollection<Pair<String, TagCount>>) {
+			// iterate on lines
+			BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
+				var lineCount = 0
+				var line: String
+				while ((reader.readLine().also { line = it }) != null) {
+					lineCount++
+					if (line.isEmpty() || line[0] == ' ') {
+						continue
+					}
 
-					entries.add(new Pair<>(sensekey, new TagCount(senseNum, tagCnt)));
-				}
-				catch (final RuntimeException e)
-				{
-					Tracing.psErr.println("[E] at line " + lineCount + " " + e);
+					try {
+						val fields = line.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+						val sensekey = fields[0]
+						// int sensenum = Integer.parseInt(fields[1]);
+						val senseNum = fields[1].toInt()
+						val tagCnt = fields[2].toInt()
+
+						entries.add(Pair(sensekey, TagCount(senseNum, tagCnt)))
+					} catch (e: RuntimeException) {
+						Tracing.psErr.println("[E] at line $lineCount $e")
+					}
 				}
 			}
 		}

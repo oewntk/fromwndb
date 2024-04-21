@@ -338,10 +338,10 @@ class Parser(
 	@JvmOverloads
 	@Throws(IOException::class, ParsePojoException::class)
 	fun parseCoreModel(
-		synsetConsumer: Consumer<Synset>? = this.synsetConsumer,
-		senseConsumer: Consumer<Sense>? = this.senseConsumer,
-		indexConsumer: Consumer<Index>? = this.indexConsumer,
-		morphConsumer: Consumer<MorphMapping>? = this.morphConsumer
+		synsetConsumer: Consumer<Synset> = this.synsetConsumer,
+		senseConsumer: Consumer<Sense> = this.senseConsumer,
+		indexConsumer: Consumer<Index> = this.indexConsumer,
+		morphConsumer: Consumer<MorphMapping> = this.morphConsumer
 	): CoreModel {
 		DataParser.parseAllSynsets(dir, synsetConsumer)
 		SenseParser.parseSenses(dir, senseConsumer)
