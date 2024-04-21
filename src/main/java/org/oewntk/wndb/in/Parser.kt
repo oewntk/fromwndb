@@ -1,510 +1,457 @@
 /*
  * Copyright (c) 2021. Bernard Bou.
  */
+package org.oewntk.wndb.`in`
 
-package org.oewntk.wndb.in;
-
-import org.oewntk.model.CoreModel;
-import org.oewntk.model.Lex;
-import org.oewntk.parse.DataParser;
-import org.oewntk.parse.IndexParser;
-import org.oewntk.parse.MorphParser;
-import org.oewntk.parse.SenseParser;
-import org.oewntk.pojos.*;
-import org.oewntk.utils.Tracing;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.*;
+import org.oewntk.model.*
+import org.oewntk.model.Key.W_P
+import org.oewntk.model.Key.W_P.Companion.from
+import org.oewntk.parse.DataParser
+import org.oewntk.parse.IndexParser
+import org.oewntk.parse.MorphParser
+import org.oewntk.parse.SenseParser
+import org.oewntk.pojos.*
+import org.oewntk.pojos.Sense
+import org.oewntk.pojos.Synset
+import org.oewntk.pojos.SynsetId
+import org.oewntk.utils.Tracing
+import java.io.File
+import java.io.IOException
+import java.io.PrintStream
+import java.util.*
+import java.util.function.Consumer
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * WNDB parser
+ *
+ * @property dir WN home dict directory
  */
-public class Parser
-{
-    private static final boolean LOG_TAGCOUNT_MERGE = false;
-
-    // PRINT STREAMS
-
-    /**
-     * Info print stream
-     */
-    private static final PrintStream psi = !System.getProperties().containsKey("SILENT") ? Tracing.psInfo : Tracing.psNull;
-
-    /**
-     * Error print stream
-     */
-    private static final PrintStream pse = !System.getProperties().containsKey("SILENT") ? Tracing.psErr : Tracing.psNull;
-
-    /**
-     * Key which is to represent sense
-     */
-    static class Key
-    {
-        public final String lemma;
-        public final char pos;
-        public final long offset;
-
-        public Key(final String lemma, final char pos, final long offset)
-        {
-            this.lemma = lemma;
-            this.pos = pos;
-            this.offset = offset;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "K{" + "lemma='" + lemma + '\'' + ", pos=" + pos + ", offset=" + offset + '}';
-        }
-
-        @Override
-        public boolean equals(final Object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass())
-            {
-                return false;
-            }
-            Key key = (Key) o;
-            return pos == key.pos && offset == key.offset && lemma.equals(key.lemma);
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return Objects.hash(lemma, pos, offset);
-        }
-    }
-
-    // MAPS
-
-    // final results
-
-    /**
-     * Lexical units
-     */
-    private final Map<org.oewntk.model.Key.W_P, Lex> lexesByKey = new TreeMap<>();
-
-    /**
-     * Senses
-     */
-    private final Collection<org.oewntk.model.Sense> senses = new ArrayList<>();
-
-    /**
-     * Synsets
-     */
-    private final Collection<org.oewntk.model.Synset> synsets = new ArrayList<>();
-
-    // intermediate pojos
-
-    /**
-     * Pojo Synsets by pojo SynsetId
-     */
-    private final Map<SynsetId, Synset> pojoSynsetsById = new HashMap<>();
-
-    // by key
-
-    /**
-     * Sensekey by key
-     */
-    private final Map<? extends Key, String> sensekeyByKey = new HashMap<>();
-
-    /**
-     * Sense relations by key
-     */
-    private final Map<? extends Key, Relation[]> relationsByKey = new HashMap<>();
-
-    /**
-     * TagCnt by key representing sense
-     */
-    private final Map<Key, TagCnt> tagCntByKey = new HashMap<>();
-
-    // 1 - C O N S U M E   S Y N S E T   P O J O S
-    // from data.(noun|verb|adj|adv)
-
-    /**
-     * Synset consumer
-     */
-    private final Consumer<Synset> synsetConsumer = synset -> {
-
-        String synsetId = synset.synsetId.toString();
-        char type = synset.type.toChar();
-        String domain = synset.domain.getName();
-        var members = Arrays.stream(synset.lemmas).map(LemmaCS::toString).toArray(String[]::new);
-        String[] definitions = new String[]{synset.gloss.getDefinition()};
-        String[] examples = synset.gloss.getSamples();
-
-        Map<String, Set<String>> relations = buildSynsetRelations(synset.relations);
-
-        org.oewntk.model.Synset modelSynset = new org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations);
-        synsets.add(modelSynset);
-
-        pojoSynsetsById.put(synset.synsetId, synset);
-    };
-
-    /**
-     * Build synset relations
-     *
-     * @param relations relations
-     * @return map type to set of target synset ids
-     */
-    private static Map<String, Set<String>> buildSynsetRelations(final Relation[] relations)
-    {
-        if (relations != null && relations.length > 0)
-        {
-            var map = Arrays.stream(relations) //
-                    .filter(r -> !(r instanceof LexRelation)) //
-                    .map(relation -> new SimpleEntry<>(relation.type.getName(), relation.toSynsetId.toString())) // (type, synsetid)
-                    .collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: synsetids
-            return map.size() == 0 ? null : map;
-        }
-        return null;
-    }
-
-    // 2 - C O N S U M E   S E N S E   P O J O S
-    // from index.sense
-
-    /**
-     * Sense consumer
-     */
-    private final Consumer<Sense> senseConsumer = sense -> {
-
-        // sensekey
-        String sensekey = sense.sensekey.toString();
-
-        // key
-        String lemma = sense.lemma.toString();
-        char pos = sense.synsetId.getPos().toChar();
-        Key key = new Key(lemma, pos, sense.synsetId.getOffset());
-
-        // store sensekey by key
-        sensekeyByKey.put(key, sensekey);
-
-        // store tagcnt by key
-        TagCnt tagCnt = sense.tagCnt;
-        var existingTagCnt = tagCntByKey.put(key, tagCnt);
-        if (existingTagCnt != null && !existingTagCnt.equals(tagCnt))
-        {
-            // merge
-            var tagCnt2 = new TagCnt(Math.min(tagCnt.senseNum, existingTagCnt.senseNum), Math.max(tagCnt.tagCount, existingTagCnt.tagCount));
-            tagCntByKey.put(key, tagCnt2);
-            if (LOG_TAGCOUNT_MERGE)
-            {
-                psi.printf("Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2);
-            }
-        }
-
-        // store relations by key
-        Synset synset = pojoSynsetsById.get(sense.synsetId);
-        /* var r =*/
-        relationsByKey.put(key, synset.relations);
-        //assert r2 != null : r2;
-    };
-
-    // 3 - C O N S U M E   I N D E X   P O J O S
-    // from index.(noun|verb|adj|adv)
-
-    /**
-     * Index consumer
-     */
-    private final Consumer<Index> indexConsumer = idx -> {
-
-        String lemma = idx.lemma.toString();
-        char pos = idx.pos.toChar();
-
-        // senses
-        final int[] i = {1};
-        Arrays.stream(idx.senses) //
-                .forEach(sense -> {
-
-                    //psi.println("\t" + sense);
-
-                    // pos and index
-                    assert pos == sense.synsetId.getPos().toChar() : sense;
-                    //assert i[0] == sense.sensePosIndex : sense;
-
-                    // case-sensitive lemma
-                    SynsetId synsetId = sense.synsetId;
-                    Synset synset = pojoSynsetsById.get(synsetId);
-                    LemmaCS[] members = synset.lemmas;
-                    Arrays.stream(members) //
-                            .filter(member -> member.toString().equalsIgnoreCase(lemma)) //
-                            .forEach(member -> {
-
-                                String memberLemma = member.toString();
-
-                                // key
-                                Key key = new Key(lemma, pos, sense.synsetId.getOffset());
-
-                                // retrieve tag count
-                                var tagCnt = tagCntByKey.get(key);
-
-                                // retrieve relations, build sense relations
-                                var relations = relationsByKey.get(key);
-                                Map<String, Set<String>> senseRelations = buildSenseRelations(member.toString(), relations);
-
-                                // retrieve sensekey
-                                String sensekey = sensekeyByKey.get(key);
-                                assert sensekey != null : "no sensekey for " + key;
-
-                                // type
-                                char type = pos != 'a' ? pos : (sensekey.split("%")[1].startsWith("5") ? 's' : 'a');
-
-                                // ver frames and adj positions
-                                String[] verbFrames = pos != 'v' ? null : buildVerbFrames(synset, memberLemma);
-                                String adjPosition = pos != 'a' ? null : (member.lemma instanceof AdjLemma ? ((AdjLemma) member.lemma).getPosition().getId() : null);
-
-                                // collect lex
-                                org.oewntk.model.Key.W_P wpKey = org.oewntk.model.Key.W_P.from(memberLemma, type);
-                                Lex lex = lexesByKey.computeIfAbsent(wpKey, k -> new org.oewntk.model.Lex(memberLemma, Character.toString(type), null));
-
-                                // senses
-                                org.oewntk.model.Sense modelSense = new org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations);
-                                if (tagCnt.tagCount != 0)
-                                {
-                                    modelSense.setTagCount(new org.oewntk.model.TagCount(tagCnt.senseNum, tagCnt.tagCount));
-                                }
-
-                                // collect sense in lex
-                                lex.addSense(modelSense);
-
-                                // collect in senses
-                                senses.add(modelSense);
-                            });
-                    i[0]++;
-                });
-    };
-
-    /**
-     * Build sense relations
-     *
-     * @param relations relations including synset relations
-     * @return sense relations
-     */
-    private Map<String, Set<String>> buildSenseRelations(final String member, final Relation[] relations)
-    {
-        if (member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
-        {
-            throw new IllegalArgumentException(member);
-        }
-
-        if (relations != null && relations.length > 0)
-        {
-            var map = Arrays.stream(relations) //
-                    .filter(r -> (r instanceof LexRelation)) // discard non-lexical
-                    .filter(lr -> member.equalsIgnoreCase(((LexRelation) lr).getFromWord().lemma.toString())) // discard relations whose from word is not target member
-                    //.peek(lr -> System.err.println(resolveToWord((LexRelation) lr)))
-                    .map(relation -> new SimpleEntry<>(relation.type.getName(), toSensekey((LexRelation) relation))) // (type: sensekey)
-                    .collect(groupingBy(SimpleEntry::getKey, mapping(SimpleEntry::getValue, toSet()))); // type: sensekeys
-            return map.size() == 0 ? null : map;
-        }
-        return null;
-    }
-
-    /**
-     * Resolve target sensekey of a lex relation
-     *
-     * @param lr lexical relation
-     * @return target sensekey
-     */
-    private String toSensekey(final LexRelation lr)
-    {
-        SynsetId toSynsetId = lr.getToSynsetId();
-        String toWord = resolveToWord(lr);
-        Key key = new Key(toWord, toSynsetId.getPos().toChar(), toSynsetId.getOffset());
-        String sensekey = sensekeyByKey.get(key);
-        assert sensekey != null : "no sensekey for " + key;
-        return sensekey;
-    }
-
-    /**
-     * Resolve target word of a lex relation
-     *
-     * @param lr lexical relation
-     * @return target word
-     */
-    private String resolveToWord(final LexRelation lr)
-    {
-        SynsetId toSynsetId = lr.getToSynsetId();
-        Synset toSynset = pojoSynsetsById.get(toSynsetId);
-        LemmaRef toWordRef = lr.getToWord();
-        return toWordRef.resolve(toSynset).toString();
-    }
-
-    // name, frame, frameid
-    private static final Object[][] VERBFRAME_VALUES = new Object[][]{ //
-            {"vii", 1}, //
-            {"via", 2}, //
-            {"nonreferential", 3}, //
-            {"vii-pp", 4}, //
-            {"vtii-adj", 5}, //
-            {"vii-adj", 6}, //
-            {"via-adj", 7}, //
-            {"vtai", 8}, //
-            {"vtaa", 9}, //
-            {"vtia", 10}, //
-            {"vtii", 11}, //
-            {"vii-to", 12}, //
-            {"via-on-inanim", 13}, //
-            {"ditransitive", 14}, //
-            {"vtai-to", 15}, //
-            {"vtai-from", 16}, //
-            {"vtaa-with", 17}, //
-            {"vtaa-of", 18}, //
-            {"vtai-on", 19}, //
-            {"vtaa-pp", 20}, //
-            {"vtai-pp", 21}, //
-            {"via-pp", 22}, //
-            {"vibody", 23}, //
-            {"vtaa-to-inf", 24}, //
-            {"vtaa-inf", 25}, //
-            {"via-that", 26}, //
-            {"via-to", 27}, //
-            {"via-to-inf", 28}, //
-            {"via-whether-inf", 29}, //
-            {"vtaa-into-ger", 30}, //
-            {"vtai-with", 31}, //
-            {"via-inf", 32}, //
-            {"via-ger", 33}, //
-            {"nonreferential-sent", 34}, //
-            {"vii-inf", 35}, //
-            {"via-at", 36}, //
-            {"via-for", 37}, //
-            {"via-on-anim", 38}, //
-            {"via-out-of", 39}, //
-    };
-
-    /**
-     * Map frame numeric id to id (via, ...)
-     */
-    private static final Map<Integer, String> VERB_FRAME_NID_TO_IDS = Stream.of(VERBFRAME_VALUES).collect(toMap(data -> (Integer) data[1], data -> (String) data[0]));
-
-    /**
-     * Build verb frame ids
-     *
-     * @param synset synset
-     * @param lemma  lemma
-     * @return array of verb frame ids
-     */
-    static String[] buildVerbFrames(Synset synset, String lemma)
-    {
-        var verbFrames = synset.getVerbFrames();
-        if (verbFrames == null)
-        {
-            return null;
-        }
-        return Arrays.stream(verbFrames) //
-                .filter(vbf -> Arrays.stream(vbf.lemmas) //
-                        .map(Lemma::toString) //
-                        .anyMatch(vfm -> vfm.equals(lemma))) //
-                .map(vfr -> VERB_FRAME_NID_TO_IDS.get(vfr.frameId)) //
-                .toArray(String[]::new);
-    }
-
-    // 4 - C O N S U M E   M O R P H M A P P I N G   P O J O S
-    // from (noun|verb|adj|adv).exc
-
-    /**
-     * Lemma to set of morphs
-     */
-    private final Map<String, Map<Character, TreeSet<String>>> lemmaToMorphs = new HashMap<>();
-
-    /**
-     * Morph consumer
-     */
-    private final Consumer<MorphMapping> morphConsumer = mapping -> {
-
-        char pos = mapping.pos.toChar();
-        String morph = mapping.morph.toString();
-        Collection<Lemma> lemmas = mapping.lemmas;
-        lemmas.forEach(lemma ->  //
-                lemmaToMorphs //
-                        .computeIfAbsent(lemma.toString(), l -> new HashMap<>()) //
-                        .computeIfAbsent(pos, p -> new TreeSet<>()) //
-                        .add(morph));
-    };
-
-    /**
-     * Inject morphs into model
-     *
-     * @param model         model
-     * @param lemmaToMorphs lemma to morphs map
-     */
-    private void setMorphs(final CoreModel model, final Map<String, Map<Character, TreeSet<String>>> lemmaToMorphs)
-    {
-        var lexByLemma = model.getLexesByLemma();
-        lemmaToMorphs.forEach((lemma, map2) -> //
-                map2.forEach((pos, morphs) -> {
-
-                    var lexes = lexByLemma.get(lemma);
-                    if (lexes != null)
-                    {
-                        lexes.stream().filter(lex -> lex.getPartOfSpeech() == pos).forEach(lex -> {
-                            var morphs2 = morphs.toArray(String[]::new);
-                            lex.setForms(morphs2);
-                        });
-                    }
-                }));
-    }
-
-    /**
-     * WN dict directory
-     */
-    final File dir;
-
-    /**
-     * Constructor
-     *
-     * @param dir WN home dict directory
-     */
-    public Parser(final File dir)
-    {
-        this.dir = dir;
-    }
-
-    /**
-     * Parse core model
-     *
-     * @param synsetConsumer synset consumer
-     * @param senseConsumer  sense consumer
-     * @param indexConsumer  index consumer
-     * @param morphConsumer  morph consumer
-     * @return core model
-     * @throws IOException        io exception
-     * @throws ParsePojoException parse pojo exception
-     */
-    public CoreModel parseCoreModel(final Consumer<Synset> synsetConsumer, final Consumer<Sense> senseConsumer, final Consumer<Index> indexConsumer, final Consumer<MorphMapping> morphConsumer) throws IOException, ParsePojoException
-    {
-        DataParser.parseAllSynsets(dir, synsetConsumer);
-        SenseParser.parseSenses(dir, senseConsumer);
-        IndexParser.parseAllIndexes(dir, indexConsumer);
-        MorphParser.parseAllMorphs(dir, morphConsumer);
-
-        Collection<Lex> lexes = new ArrayList<>(lexesByKey.values()); // TreeMap.Values are not serializable
-        CoreModel model = new CoreModel(lexes, senses, synsets);
-        setMorphs(model, lemmaToMorphs);
-        return model;
-    }
-
-    /**
-     * Parse core model
-     *
-     * @return core model
-     * @throws IOException        io exception
-     * @throws ParsePojoException parse pojo exception
-     */
-    public CoreModel parseCoreModel() throws IOException, ParsePojoException
-    {
-        return parseCoreModel(synsetConsumer, senseConsumer, indexConsumer, morphConsumer);
-    }
+class Parser(
+	val dir: File
+) {
+
+	/**
+	 * Key which is to represent sense
+	 */
+	internal class Key(
+		private val lemma: String,
+		private val pos: Char,
+		private val offset: Long
+	) {
+		override fun toString(): String {
+			return "K{lemma='$lemma', pos=$pos, offset=$offset}"
+		}
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) {
+				return true
+			}
+			if (other == null || javaClass != other.javaClass) {
+				return false
+			}
+			val key = other as Key
+			return pos == key.pos && offset == key.offset && lemma == key.lemma
+		}
+
+		override fun hashCode(): Int {
+			return Objects.hash(lemma, pos, offset)
+		}
+	}
+
+	// MAPS
+	// final results
+
+	/**
+	 * Lexical units
+	 */
+	private val lexesByKey: MutableMap<W_P, Lex> = TreeMap()
+
+	/**
+	 * Senses
+	 */
+	private val senses: MutableCollection<org.oewntk.model.Sense> = ArrayList()
+
+	/**
+	 * Synsets
+	 */
+	private val synsets: MutableCollection<org.oewntk.model.Synset> = ArrayList()
+
+	// intermediate pojos
+	/**
+	 * Pojo Synsets by pojo SynsetId
+	 */
+	private val pojoSynsetsById: MutableMap<SynsetId, Synset> = HashMap()
+
+	// by key
+	/**
+	 * Sensekey by key
+	 */
+	private val sensekeyByKey: MutableMap<Key, String> = HashMap()
+
+	/**
+	 * Sense relations by key
+	 */
+	private val relationsByKey: MutableMap<Key, Array<Relation>> = HashMap()
+
+	/**
+	 * TagCnt by key representing sense
+	 */
+	private val tagCntByKey: MutableMap<Key, TagCnt> = HashMap()
+
+	// 1 - C O N S U M E   S Y N S E T   P O J O S
+	// from data.(noun|verb|adj|adv)
+
+	/**
+	 * Synset consumer
+	 */
+	private val synsetConsumer = Consumer<Synset> { synset: Synset ->
+		val synsetId = synset.synsetId.toString()
+		val type = synset.type.toChar()
+		val domain = synset.domain.getName()
+		val members = synset.lemmas
+			.map { it.toString() }
+			.toTypedArray()
+		val definitions = arrayOf(synset.gloss.definition)
+		val examples = synset.gloss.samples
+
+		val relations = buildSynsetRelations(synset.relations)
+
+		val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations)
+		synsets.add(modelSynset)
+		pojoSynsetsById[synset.synsetId] = synset
+	}
+
+	// 2 - C O N S U M E   S E N S E   P O J O S
+	// from index.sense
+
+	/**
+	 * Sense consumer
+	 */
+	private val senseConsumer = Consumer { sense: Sense ->
+
+		// sensekey
+		val sensekey = sense.sensekey.toString()
+
+		// key
+		val lemma = sense.lemma.toString()
+		val pos = sense.synsetId.pos.toChar()
+		val key = Key(lemma, pos, sense.synsetId.offset)
+
+		// store sensekey by key
+		sensekeyByKey[key] = sensekey
+
+		// store tagcnt by key
+		val tagCnt = sense.tagCnt
+		val existingTagCnt = tagCntByKey.put(key, tagCnt)
+		if (existingTagCnt != null && existingTagCnt != tagCnt) {
+			// merge
+			val tagCnt2 = TagCnt(min(tagCnt.senseNum.toDouble(), existingTagCnt.senseNum.toDouble()).toInt(), max(tagCnt.tagCount.toDouble(), existingTagCnt.tagCount.toDouble()).toInt())
+			tagCntByKey[key] = tagCnt2
+			if (LOG_TAGCOUNT_MERGE) {
+				psi.printf("Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
+			}
+		}
+
+		// store relations by key
+		val synset = pojoSynsetsById[sense.synsetId]
+		/* var r =*/
+		relationsByKey[key] = synset!!.relations
+	}
+
+	// 3 - C O N S U M E   I N D E X   P O J O S
+
+	// from index.(noun|verb|adj|adv)
+	/**
+	 * Index consumer
+	 */
+	private val indexConsumer = Consumer { idx: Index ->
+		val lemma = idx.lemma.toString()
+		val pos = idx.pos.toChar()
+
+		// senses
+		val i = intArrayOf(1)
+		Arrays.stream(idx.senses) //
+			.forEach { sense: BaseSense ->
+
+				//psi.println("\t" + sense);
+				// pos and index
+				assert(pos == sense.synsetId.pos.toChar()) { sense }
+
+				//assert i[0] == sense.sensePosIndex : sense;
+
+				// case-sensitive lemma
+				val synsetId = sense.synsetId
+				val synset = pojoSynsetsById[synsetId]
+				val members = synset!!.lemmas
+				Arrays.stream(members) //
+					.filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) } //
+					.forEach { member: LemmaCS ->
+						val memberLemma = member.toString()
+						// key
+						val key = Key(lemma, pos, sense.synsetId.offset)
+
+						// retrieve tag count
+						val tagCnt = tagCntByKey[key]
+
+						// retrieve relations, build sense relations
+						val relations = relationsByKey[key]
+						val senseRelations = buildSenseRelations(member.toString(), relations)
+
+						// retrieve sensekey
+						val sensekey = checkNotNull(sensekeyByKey[key]) { "no sensekey for $key" }
+						// type
+						val type = if (pos != 'a') pos else (if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) 's' else 'a')
+
+						// ver frames and adj positions
+						val verbFrames = if (pos != 'v') null else buildVerbFrames(synset, memberLemma)
+						val adjPosition = if (pos != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
+
+						// collect lex
+						val wpKey = from(memberLemma, type)
+						val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null) }
+
+						// senses
+						val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
+						if (tagCnt!!.tagCount != 0) {
+							modelSense.tagCount = TagCount(tagCnt.senseNum, tagCnt.tagCount)
+						}
+
+						// collect sense in lex
+						lex.addSense(modelSense)
+
+						// collect in senses
+						senses.add(modelSense)
+					}
+				i[0]++
+			}
+	}
+
+	/**
+	 * Build sense relations
+	 *
+	 * @param relations relations including synset relations
+	 * @return sense relations
+	 */
+	private fun buildSenseRelations(member: String, relations: Array<Relation>?): MutableMap<String, MutableSet<String>>? {
+		require(!member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ")) { member }
+
+		if (!relations.isNullOrEmpty()) {
+			val map = relations
+				.filterIsInstance<LexRelation>() // discard non-lexical
+				.filter { member.equals((it).getFromWord().lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
+				.map { it.type.name to toSensekey(it) } // (type: sensekey)
+				.groupBy { it.first }
+				.mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: sensekeys
+				.toMutableMap()
+			return map.ifEmpty { null }
+		}
+		return null
+	}
+
+	/**
+	 * Resolve target sensekey of a lex relation
+	 *
+	 * @param lr lexical relation
+	 * @return target sensekey
+	 */
+	private fun toSensekey(lr: LexRelation): String {
+		val toSynsetId = lr.getToSynsetId()
+		val toWord = resolveToWord(lr)
+		val key = Key(toWord, toSynsetId.pos.toChar(), toSynsetId.offset)
+		val sensekey = checkNotNull(sensekeyByKey[key]) { "no sensekey for $key" }
+		return sensekey
+	}
+
+	/**
+	 * Resolve target word of a lex relation
+	 *
+	 * @param lr lexical relation
+	 * @return target word
+	 */
+	private fun resolveToWord(lr: LexRelation): String {
+		val toSynsetId = lr.getToSynsetId()
+		val toSynset = pojoSynsetsById[toSynsetId]
+		val toWordRef = lr.toWord
+		return toWordRef.resolve(toSynset).toString()
+	}
+
+	// 4 - C O N S U M E   M O R P H M A P P I N G   P O J O S
+
+	// from (noun|verb|adj|adv).exc
+	/**
+	 * Lemma to set of morphs
+	 */
+	private val lemmaToMorphs: MutableMap<String, MutableMap<Char, TreeSet<String>>> = HashMap()
+
+	/**
+	 * Morph consumer
+	 */
+	private val morphConsumer = Consumer { mapping: MorphMapping ->
+		val pos = mapping.pos.toChar()
+		val morph = mapping.morph.toString()
+		val lemmas = mapping.lemmas
+		lemmas.forEach(Consumer { lemma: Lemma ->  //
+			lemmaToMorphs //
+				.computeIfAbsent(lemma.toString()) { HashMap() } //
+				.computeIfAbsent(pos) { TreeSet() } //
+				.add(morph)
+		})
+	}
+
+	/**
+	 * Inject morphs into model
+	 *
+	 * @param model         model
+	 * @param lemmaToMorphs lemma to morphs map
+	 */
+	private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<Char, TreeSet<String>>>) {
+		val lexByLemma = model.lexesByLemma!!
+		lemmaToMorphs.forEach { (lemma, map2) ->
+			map2.forEach { (pos, morphs) ->
+				val lexes = lexByLemma[lemma]
+				lexes?.let { lexes2 ->
+					lexes2
+						.filter { it.partOfSpeech == pos }
+						.forEach {
+							val morphs2 = morphs.toTypedArray()
+							it.setForms(*morphs2)
+						}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Parse core model
+	 *
+	 * @param synsetConsumer synset consumer
+	 * @param senseConsumer  sense consumer
+	 * @param indexConsumer  index consumer
+	 * @param morphConsumer  morph consumer
+	 * @return core model
+	 * @throws IOException        io exception
+	 * @throws ParsePojoException parse pojo exception
+	 */
+	@JvmOverloads
+	@Throws(IOException::class, ParsePojoException::class)
+	fun parseCoreModel(
+		synsetConsumer: Consumer<Synset>? = this.synsetConsumer,
+		senseConsumer: Consumer<Sense>? = this.senseConsumer,
+		indexConsumer: Consumer<Index>? = this.indexConsumer,
+		morphConsumer: Consumer<MorphMapping>? = this.morphConsumer
+	): CoreModel {
+		DataParser.parseAllSynsets(dir, synsetConsumer)
+		SenseParser.parseSenses(dir, senseConsumer)
+		IndexParser.parseAllIndexes(dir, indexConsumer)
+		MorphParser.parseAllMorphs(dir, morphConsumer)
+
+		val lexes: Collection<Lex> = ArrayList(lexesByKey.values) // TreeMap.Values are not serializable
+		val model = CoreModel(lexes, senses, synsets)
+		setMorphs(model, lemmaToMorphs)
+		return model
+	}
+
+	companion object {
+		private const val LOG_TAGCOUNT_MERGE = false
+
+		// PRINT STREAMS
+
+		/**
+		 * Info print stream
+		 */
+		private val psi: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psInfo else Tracing.psNull
+
+		/**
+		 * Error print stream
+		 */
+		private val pse: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psErr else Tracing.psNull
+
+		/**
+		 * Build synset relations
+		 *
+		 * @param relations relations
+		 * @return map type to set of target synset ids
+		 */
+		private fun buildSynsetRelations(relations: Array<Relation>?): MutableMap<String, MutableSet<String>>? {
+			if (!relations.isNullOrEmpty()) {
+				val map = relations
+					.filter { it !is LexRelation }
+					.map { it.type.name to it.toSynsetId.toString() } // (type, synsetid)
+					.groupBy { it.first }
+					.mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: synsetids
+					.toMutableMap()
+				return map.ifEmpty { null }
+			}
+			return null
+		}
+
+		// name, frame, frameid
+		private val VERBFRAME_VALUES = arrayOf(
+			"vii" to 1,
+			"via" to 2,
+			"nonreferential" to 3,
+			"vii-pp" to 4,
+			"vtii-adj" to 5,
+			"vii-adj" to 6,
+			"via-adj" to 7,
+			"vtai" to 8,
+			"vtaa" to 9,
+			"vtia" to 10,
+			"vtii" to 11,
+			"vii-to" to 12,
+			"via-on-inanim" to 13,
+			"ditransitive" to 14,
+			"vtai-to" to 15,
+			"vtai-from" to 16,
+			"vtaa-with" to 17,
+			"vtaa-of" to 18,
+			"vtai-on" to 19,
+			"vtaa-pp" to 20,
+			"vtai-pp" to 21,
+			"via-pp" to 22,
+			"vibody" to 23,
+			"vtaa-to-inf" to 24,
+			"vtaa-inf" to 25,
+			"via-that" to 26,
+			"via-to" to 27,
+			"via-to-inf" to 28,
+			"via-whether-inf" to 29,
+			"vtaa-into-ger" to 30,
+			"vtai-with" to 31,
+			"via-inf" to 32,
+			"via-ger" to 33,
+			"nonreferential-sent" to 34,
+			"vii-inf" to 35,
+			"via-at" to 36,
+			"via-for" to 37,
+			"via-on-anim" to 38,
+			"via-out-of" to 39,
+		)
+
+		/**
+		 * Map frame numeric id to id (via, ...)
+		 */
+		private val VERB_FRAME_NID_TO_IDS = VERBFRAME_VALUES.associate { it.second to it.first }
+
+		/**
+		 * Build verb frame ids
+		 *
+		 * @param synset synset
+		 * @param lemma  lemma
+		 * @return array of verb frame ids
+		 */
+		fun buildVerbFrames(synset: Synset, lemma: String): Array<String>? {
+			val verbFrames = synset.verbFrames ?: return null
+			return verbFrames
+				.filter { it2 ->
+					it2.lemmas
+						.map { it.toString() }
+						.any { it == lemma }
+				}
+				.map { VERB_FRAME_NID_TO_IDS[it.frameId]!! }
+				.toTypedArray()
+		}
+	}
 }
