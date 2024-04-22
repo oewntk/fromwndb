@@ -317,7 +317,7 @@ class Parser(
 						.filter { it.partOfSpeech == pos }
 						.forEach {
 							val morphs2 = morphs.toTypedArray()
-							it.setForms(*morphs2)
+							it.setForms(morphs2)
 						}
 				}
 			}
