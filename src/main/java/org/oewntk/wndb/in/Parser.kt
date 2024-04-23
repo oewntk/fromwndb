@@ -172,21 +172,23 @@ class Parser(
 		val pos = idx.pos.toChar()
 
 		// senses
-		val i = intArrayOf(1)
-		Arrays.stream(idx.senses) //
-			.forEach { sense: BaseSense ->
+		//val i = intArrayOf(1)
+		idx.senses
+			.asSequence()
+			.withIndex()
+			.forEach { (index,sense) ->
 
-				//psi.println("\t" + sense);
+				// psi.println("\t" + sense)
 				// pos and index
 				assert(pos == sense.synsetId.pos.toChar()) { sense }
 
-				//assert i[0] == sense.sensePosIndex : sense;
+				//assert i[0] == sense.sensePosIndex : sense
 
 				// case-sensitive lemma
 				val synsetId = sense.synsetId
 				val synset = pojoSynsetsById[synsetId]
 				val members = synset!!.cSLemmas
-				Arrays.stream(members) //
+				members
 					.filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) } //
 					.forEach { member: LemmaCS ->
 						val memberLemma = member.toString()
@@ -214,7 +216,7 @@ class Parser(
 						val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null) }
 
 						// senses
-						val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, i[0], sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
+						val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
 						if (tagCnt!!.tagCount != 0) {
 							modelSense.tagCount = TagCount(tagCnt.senseNum, tagCnt.tagCount)
 						}
@@ -225,7 +227,6 @@ class Parser(
 						// collect in senses
 						senses.add(modelSense)
 					}
-				i[0]++
 			}
 	}
 
