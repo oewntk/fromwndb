@@ -172,11 +172,10 @@ class Parser(
 		val pos = idx.pos.toChar()
 
 		// senses
-		//val i = intArrayOf(1)
 		idx.senses
 			.asSequence()
 			.withIndex()
-			.forEach { (index,sense) ->
+			.forEach { (index, sense) ->
 
 				// psi.println("\t" + sense)
 				// pos and index
