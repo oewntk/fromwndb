@@ -164,6 +164,7 @@ class Parser(
 	// 3 - C O N S U M E   I N D E X   P O J O S
 
 	// from index.(noun|verb|adj|adv)
+
 	/**
 	 * Index consumer
 	 */
@@ -221,7 +222,7 @@ class Parser(
 						}
 
 						// collect sense in lex
-						lex.addSense(modelSense)
+						lex.senses.add(modelSense)
 
 						// collect in senses
 						senses.add(modelSense)
@@ -316,8 +317,7 @@ class Parser(
 					lexes2
 						.filter { it.partOfSpeech == pos }
 						.forEach {
-							val morphs2 = morphs.toTypedArray()
-							it.setForms(morphs2)
+							it.forms = morphs.toTypedArray()
 						}
 				}
 			}
