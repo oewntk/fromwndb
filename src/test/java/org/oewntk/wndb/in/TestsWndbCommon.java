@@ -38,6 +38,7 @@ public class TestsWndbCommon
 
 			model = new CoreFactory(inDir).get();
 		}
+		assert model != null;
 		ps.println(model.info());
 		ps.println(model.counts());
 	}
