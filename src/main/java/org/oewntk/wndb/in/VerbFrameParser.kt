@@ -40,20 +40,19 @@ class VerbFrameParser(
 		// iterate on lines
 		BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
 			var lineCount = 0
-			var line: String
-			while ((reader.readLine().also { line = it }) != null) {
-				lineCount++
-				if (line.isEmpty() || line[0] == ' ') {
-					continue
-				}
-
-				try {
-					val fields = line.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-					val field1 = fields[0]
-					val field2 = fields[1].trim { it <= ' ' }
-					verbFrames.add(VerbFrame(field1, field2))
-				} catch (e: RuntimeException) {
-					Tracing.psErr.println("[E] verb frame at line $lineCount $e")
+			reader.useLines { lines ->
+				lines.forEach { line ->
+					lineCount++
+					if (line.isNotEmpty() || line[0] != ' ') {
+						try {
+							val fields = line.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+							val field1 = fields[0]
+							val field2 = fields[1].trim { it <= ' ' }
+							verbFrames.add(VerbFrame(field1, field2))
+						} catch (e: RuntimeException) {
+							Tracing.psErr.println("[E] verb frame at line $lineCount $e")
+						}
+					}
 				}
 			}
 		}

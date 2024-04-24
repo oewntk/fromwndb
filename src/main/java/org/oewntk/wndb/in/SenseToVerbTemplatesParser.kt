@@ -40,22 +40,21 @@ class SenseToVerbTemplatesParser(
 			// iterate on lines
 			BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
 				var lineCount = 0
-				var line: String
-				while ((reader.readLine().also { line = it }) != null) {
-					lineCount++
-					if (line.isEmpty() || line[0] == ' ') {
-						continue
-					}
-
-					try {
-						val fields = line.split("[\\s,]+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-						val sensekey = fields[0]
-						val templateIds = Array(fields.size - 1) {
-							fields[it + 1].toInt()
+				reader.useLines { lines ->
+					lines.forEach { line ->
+						lineCount++
+						if (line.isNotEmpty() || line[0] != ' ') {
+							try {
+								val fields = line.split("[\\s,]+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+								val sensekey = fields[0]
+								val templateIds = Array(fields.size - 1) {
+									fields[it + 1].toInt()
+								}
+								entries.add(Pair(sensekey, templateIds))
+							} catch (e: RuntimeException) {
+								Tracing.psErr.println("[E] verb templates at line $lineCount $e")
+							}
 						}
-						entries.add(Pair(sensekey, templateIds))
-					} catch (e: RuntimeException) {
-						Tracing.psErr.println("[E] verb templates at line $lineCount $e")
 					}
 				}
 			}

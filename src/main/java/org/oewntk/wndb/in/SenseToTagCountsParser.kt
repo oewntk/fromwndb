@@ -42,23 +42,22 @@ class SenseToTagCountsParser(
 			// iterate on lines
 			BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
 				var lineCount = 0
-				var line: String
-				while ((reader.readLine().also { line = it }) != null) {
-					lineCount++
-					if (line.isEmpty() || line[0] == ' ') {
-						continue
-					}
+				reader.useLines { lines ->
+					lines.forEach { line ->
+						lineCount++
+						if (line.isNotEmpty() && line[0] != ' ') {
+							try {
+								val fields = line.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+								val sensekey = fields[0]
+								// int sensenum = Integer.parseInt(fields[1]);
+								val senseNum = fields[1].toInt()
+								val tagCnt = fields[2].toInt()
 
-					try {
-						val fields = line.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-						val sensekey = fields[0]
-						// int sensenum = Integer.parseInt(fields[1]);
-						val senseNum = fields[1].toInt()
-						val tagCnt = fields[2].toInt()
-
-						entries.add(Pair(sensekey, TagCount(senseNum, tagCnt)))
-					} catch (e: RuntimeException) {
-						Tracing.psErr.println("[E] at line $lineCount $e")
+								entries.add(Pair(sensekey, TagCount(senseNum, tagCnt)))
+							} catch (e: RuntimeException) {
+								Tracing.psErr.println("[E] at line $lineCount $e")
+							}
+						}
 					}
 				}
 			}
