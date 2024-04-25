@@ -204,6 +204,7 @@ class Parser(
 
 						// retrieve sensekey
 						val sensekey = checkNotNull(sensekeyByKey[key]) { "no sensekey for $key" }
+
 						// type
 						val type = if (pos != 'a') pos else (if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) 's' else 'a')
 
@@ -213,7 +214,7 @@ class Parser(
 
 						// collect lex
 						val wpKey = from(memberLemma, type)
-						val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null) }
+						val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null).apply { senses = ArrayList() } }
 
 						// senses
 						val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
