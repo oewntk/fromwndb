@@ -1,42 +1,45 @@
 /*
  * Copyright (c) 2021. Bernard Bou.
  */
+package org.oewntk.wndb.`in`
 
-package org.oewntk.wndb.in;
+import org.junit.BeforeClass
+import org.junit.Test
+import org.oewntk.model.LibTestModelDuplicates.testDuplicatesForKeyIC
+import org.oewntk.model.LibTestModelDuplicates.testDuplicatesForKeyOEWN
+import org.oewntk.model.LibTestModelDuplicates.testDuplicatesForKeyPWN
+import org.oewntk.model.LibTestModelDuplicates.testDuplicatesForKeyPos
+import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
+import org.oewntk.wndb.`in`.LibTestsWndbCommon.ps
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.oewntk.model.LibTestModelDuplicates;
+class TestsWndbModelDuplicates {
 
-public class TestsWndbModelDuplicates
-{
-	@BeforeClass
-	public static void init()
-	{
-		TestsWndbCommon.init();
+	@Test
+	fun testKeyOEWN() {
+		testDuplicatesForKeyOEWN(model!!, ps)
 	}
 
 	@Test
-	public void testKeyOEWN()
-	{
-		LibTestModelDuplicates.testDuplicatesForKeyOEWN(TestsWndbCommon.model, TestsWndbCommon.ps);
-	}
-
-	@Test(expected = AssertionError.class)
-	public void testKeyPos()
-	{
-		LibTestModelDuplicates.testDuplicatesForKeyPos(TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testKeyPos() {
+		testDuplicatesForKeyPos(model!!, ps)
 	}
 
 	@Test
-	public void testKeyIC()
-	{
-		LibTestModelDuplicates.testDuplicatesForKeyIC(TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testKeyIC() {
+		testDuplicatesForKeyIC(model!!, ps)
 	}
 
 	@Test
-	public void testKeyPWN()
-	{
-		LibTestModelDuplicates.testDuplicatesForKeyPWN(TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testKeyPWN() {
+		testDuplicatesForKeyPWN(model!!, ps)
+	}
+
+	companion object {
+		@JvmStatic
+		@BeforeClass
+		fun init() {
+			LibTestsWndbCommon.init()
+			checkNotNull(model)
+		}
 	}
 }

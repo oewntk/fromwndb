@@ -1,109 +1,102 @@
 /*
  * Copyright (c) 2021. Bernard Bou.
  */
+package org.oewntk.wndb.`in`
 
-package org.oewntk.wndb.in;
+import org.junit.BeforeClass
+import org.junit.Test
+import org.oewntk.model.Key
+import org.oewntk.model.Lex
+import org.oewntk.model.LibTestModel.makeIndexMap
+import org.oewntk.model.LibTestModel.makeSortedIndexMap
+import org.oewntk.model.LibTestModel.testScanLexesForTestWords
+import org.oewntk.model.LibTestModel.testWord
+import org.oewntk.model.LibTestModel.testWords
+import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
+import org.oewntk.wndb.`in`.LibTestsWndbCommon.ps
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.oewntk.model.Key;
-import org.oewntk.model.LibTestModel;
+class TestsWndbModelWords {
 
-import java.util.Set;
-
-public class TestsWndbModelWords
-{
-	private static final boolean peekTestWords = false;
-
-	private static final Set<String> testWords = Set.of("baroque", "Baroque", "bass", "row");
-
-	@BeforeClass
-	public static void init()
-	{
-		TestsWndbCommon.init();
+	@Test
+	fun testScanLexesForTestWords() {
+		testScanLexesForTestWords(model!!, { lex: Lex -> Key.W_P_A.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
 	}
 
 	@Test
-	public void testScanLexesForTestWords()
-	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.W_P_A::of_t, LibTestModel::makeIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
+	fun testScanLexesForTestWordsSorted() {
+		testScanLexesForTestWords(model!!, { lex: Lex -> Key.W_P_A.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
 	}
 
 	@Test
-	public void testScanLexesForTestWordsSorted()
-	{
-		LibTestModel.testScanLexesForTestWords(TestsWndbCommon.model, Key.W_P_A::of_t, LibTestModel::makeSortedIndexMap, testWords, peekTestWords, TestsWndbCommon.ps);
+	fun testBass() {
+		testWord("bass", model!!, ps)
 	}
 
 	@Test
-	public void testBass()
-	{
-		LibTestModel.testWord("bass", TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testRow() {
+		testWord("row", model!!, ps)
 	}
 
 	@Test
-	public void testRow()
-	{
-		LibTestModel.testWord("row", TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testBaroque() {
+		testWords(model!!, ps, "baroque", "Baroque")
 	}
 
 	@Test
-	public void testBaroque()
-	{
-		LibTestModel.testWords(TestsWndbCommon.model, TestsWndbCommon.ps, "baroque", "Baroque");
+	fun testEarth() {
+		testWords(model!!, ps, "earth", "Earth")
 	}
 
 	@Test
-	public void testEarth()
-	{
-		LibTestModel.testWords(TestsWndbCommon.model, TestsWndbCommon.ps, "earth", "Earth");
+	fun testCritical() {
+		testWord("critical", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testCritical()
-	{
-		LibTestModel.testWord("critical", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testHollywood() {
+		testWord("Hollywood", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testHollywood()
-	{
-		LibTestModel.testWord("Hollywood", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testVictorian() {
+		testWord("Victorian", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testVictorian()
-	{
-		LibTestModel.testWord("Victorian", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testAllied() {
+		testWord("allied", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testAllied()
-	{
-		LibTestModel.testWord("allied", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testAlliedUpper() {
+		testWord("Allied", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testAlliedUpper()
-	{
-		LibTestModel.testWord("Allied", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testAbsent() {
+		testWord("absent", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testAbsent()
-	{
-		LibTestModel.testWord("absent", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testApocryphal() {
+		testWord("apocryphal", 'a', model!!, ps)
 	}
 
 	@Test
-	public void testApocryphal()
-	{
-		LibTestModel.testWord("apocryphal", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	fun testUsed() {
+		testWord("used", 'a', model!!, ps)
 	}
 
-	@Test
-	public void testUsed()
-	{
-		LibTestModel.testWord("used", 'a', TestsWndbCommon.model, TestsWndbCommon.ps);
+	companion object {
+		private const val PRINT_TEST_WORDS = false
+
+		private val testWords = setOf("baroque", "Baroque", "bass", "row")
+
+		@JvmStatic
+		@BeforeClass
+		fun init() {
+			LibTestsWndbCommon.init()
+			checkNotNull(model)
+		}
 	}
 }

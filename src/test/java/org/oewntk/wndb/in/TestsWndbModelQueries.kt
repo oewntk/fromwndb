@@ -1,79 +1,73 @@
 /*
  * Copyright (c) 2021. Bernard Bou.
  */
+package org.oewntk.wndb.`in`
 
-package org.oewntk.wndb.in;
+import org.junit.BeforeClass
+import org.junit.Test
+import org.oewntk.model.LibTestModelQueries.testWordByType
+import org.oewntk.model.LibTestModelQueries.testWordByTypeAndPronunciation
+import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
+import org.oewntk.wndb.`in`.LibTestsWndbCommon.ps
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.oewntk.model.LibTestModelQueries;
+class TestsWndbModelQueries {
 
-public class TestsWndbModelQueries
-{
-	@BeforeClass
-	public static void init()
-	{
-		TestsWndbCommon.init();
+	@Test
+	fun testRowByType() {
+		testWordByType(model!!, "row", ps)
 	}
 
 	@Test
-	public void testRowByType()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "row", TestsWndbCommon.ps);
+	fun testRowByPos() {
+		testWordByType(model!!, "row", ps)
 	}
 
 	@Test
-	public void testRowByPos()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "row", TestsWndbCommon.ps);
+	fun testRowByTypeAndPronunciation() {
+		testWordByTypeAndPronunciation(model!!, "row", ps)
 	}
 
 	@Test
-	public void testRowByTypeAndPronunciation()
-	{
-		LibTestModelQueries.testWordByTypeAndPronunciation(TestsWndbCommon.model, "row", TestsWndbCommon.ps);
+	fun testRowByPosAndPronunciation() {
+		testWordByTypeAndPronunciation(model!!, "row", ps)
 	}
 
 	@Test
-	public void testRowByPosAndPronunciation()
-	{
-		LibTestModelQueries.testWordByTypeAndPronunciation(TestsWndbCommon.model, "row", TestsWndbCommon.ps);
-	}
-
-
-	@Test
-	public void testCriticalByType()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "critical", TestsWndbCommon.ps);
+	fun testCriticalByType() {
+		testWordByType(model!!, "critical", ps)
 	}
 
 	@Test
-	public void testCriticalByPos()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "critical", TestsWndbCommon.ps);
+	fun testCriticalByPos() {
+		testWordByType(model!!, "critical", ps)
 	}
 
 	@Test
-	public void testBassByPos()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "bass", TestsWndbCommon.ps);
+	fun testBassByPos() {
+		testWordByType(model!!, "bass", ps)
 	}
 
 	@Test
-	public void testBaroqueByPos()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "baroque", TestsWndbCommon.ps);
+	fun testBaroqueByPos() {
+		testWordByType(model!!, "baroque", ps)
 	}
 
 	@Test
-	public void testBaroqueCSByPos()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "Baroque", TestsWndbCommon.ps);
+	fun testBaroqueCSByPos() {
+		testWordByType(model!!, "Baroque", ps)
 	}
 
 	@Test
-	public void testGaloreByPos()
-	{
-		LibTestModelQueries.testWordByType(TestsWndbCommon.model, "galore", TestsWndbCommon.ps);
+	fun testGaloreByPos() {
+		testWordByType(model!!, "galore", ps)
+	}
+
+	companion object {
+		@JvmStatic
+		@BeforeClass
+		fun init() {
+			LibTestsWndbCommon.init()
+			checkNotNull(model)
+		}
 	}
 }
