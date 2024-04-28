@@ -109,13 +109,12 @@ class Parser(
 	private val synsetConsumer = Consumer<Synset> { synset: Synset ->
 		val synsetId = synset.id.toString()
 		val type = synset.type.toChar()
-		val domain = synset.domain.name
+		val domain = synset.domain.name2
 		val members = synset.cSLemmas
 			.map { it.toString() }
 			.toTypedArray()
 		val definitions = arrayOf(synset.gloss.definition)
 		val examples = synset.gloss.samples
-
 		val relations = buildSynsetRelations(synset.relations)
 
 		val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations)
@@ -244,7 +243,7 @@ class Parser(
 			val map = relations
 				.filterIsInstance<LexRelation>() // discard non-lexical
 				.filter { member.equals((it).fromWord.lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
-				.map { it.type.name to toSensekey(it) } // (type: sensekey)
+				.map { it.type.name2 to toSensekey(it) } // (type: sensekey)
 				.groupBy { it.first }
 				.mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: sensekeys
 				.toMutableMap()
@@ -380,7 +379,7 @@ class Parser(
 			if (!relations.isNullOrEmpty()) {
 				val map = relations
 					.filter { it !is LexRelation }
-					.map { it.type.name to it.toSynsetId.toString() } // (type, synsetid)
+					.map { it.type.name2 to it.toSynsetId.toString() } // (type, synsetid)
 					.groupBy { it.first }
 					.mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: synsetids
 					.toMutableMap()
