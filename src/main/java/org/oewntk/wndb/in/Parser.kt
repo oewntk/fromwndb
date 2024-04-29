@@ -29,16 +29,16 @@ import kotlin.math.min
  * @property dir WN home dict directory
  */
 class Parser(
-	val dir: File,
+    val dir: File,
 ) {
 
     /**
      * Key which is to represent sense
      */
     internal class Key(
-	    private val lemma: String,
-	    private val pos: Char,
-	    private val offset: Long,
+        private val lemma: String,
+        private val pos: Char,
+        private val offset: Long,
     ) {
 
         override fun toString(): String {
@@ -338,10 +338,10 @@ class Parser(
      */
     @Throws(IOException::class, ParsePojoException::class)
     fun parseCoreModel(
-	    synsetConsumer: Consumer<Synset> = this.synsetConsumer,
-	    senseConsumer: Consumer<Sense> = this.senseConsumer,
-	    indexConsumer: Consumer<Index> = this.indexConsumer,
-	    morphConsumer: Consumer<MorphMapping> = this.morphConsumer,
+        synsetConsumer: Consumer<Synset> = this.synsetConsumer,
+        senseConsumer: Consumer<Sense> = this.senseConsumer,
+        indexConsumer: Consumer<Index> = this.indexConsumer,
+        morphConsumer: Consumer<MorphMapping> = this.morphConsumer,
     ): CoreModel {
         DataParser.parseAllSynsets(dir, synsetConsumer)
         SenseParser.parseSenses(dir, senseConsumer)
