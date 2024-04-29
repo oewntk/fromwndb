@@ -336,7 +336,6 @@ class Parser(
      * @throws IOException        io exception
      * @throws ParsePojoException parse pojo exception
      */
-    @JvmOverloads
     @Throws(IOException::class, ParsePojoException::class)
     fun parseCoreModel(
 	    synsetConsumer: Consumer<Synset> = this.synsetConsumer,
