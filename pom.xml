@@ -149,17 +149,9 @@
         <version>2.22.2</version>
         <configuration>
           <systemPropertyVariables>
-            <property>
-              <name>SOURCE</name>
-              <value>${project.basedir}/wndb</value>
-            </property>
-            <property>
-              <name>SOURCE2</name>
-              <value>${project.basedir}/wndb2</value>
-            </property>
-            <property>
-              <name>SILENT</name>
-            </property>
+            <SOURCE>${project.basedir}/wndb</SOURCE>
+            <SOURCE2>${project.basedir}/wndb2</SOURCE2>
+            <SILENT/>
           </systemPropertyVariables>
         </configuration>
       </plugin>
