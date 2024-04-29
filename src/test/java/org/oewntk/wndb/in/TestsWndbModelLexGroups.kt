@@ -16,73 +16,74 @@ import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
 import org.oewntk.wndb.`in`.LibTestsWndbCommon.ps
 
 class TestsWndbModelLexGroups {
-	@Test
-	fun testCIMultipleAll() {
-		testCIMultipleAll(model!!, ps)
-	}
 
-	@Test
-	fun testCILemmas() {
-		testCILemmas(model!!, "battle of verdun", ps)
-	}
+    @Test
+    fun testCIMultipleAll() {
+        testCIMultipleAll(model!!, ps)
+    }
 
-	@Test
-	fun testCICounts() {
-		testCICounts(model!!, "battle of verdun", ps)
-	}
+    @Test
+    fun testCILemmas() {
+        testCILemmas(model!!, "battle of verdun", ps)
+    }
 
-	@Test
-	fun testCICountsFromMap() {
-		testCICountsFromMap(model!!, "battle of verdun", ps)
-	}
+    @Test
+    fun testCICounts() {
+        testCICounts(model!!, "battle of verdun", ps)
+    }
 
-	@Test
-	fun testCIHypermapWest() {
-		testCIHypermap(model!!, "west", ps)
-	}
+    @Test
+    fun testCICountsFromMap() {
+        testCICountsFromMap(model!!, "battle of verdun", ps)
+    }
 
-	@Test
-	fun testCIHypermapBaroque() {
-		testCIHypermap(model!!, "baroque", ps)
-	}
+    @Test
+    fun testCIHypermapWest() {
+        testCIHypermap(model!!, "west", ps)
+    }
 
-	@Test
-	fun testCIAi() {
-		testCILexesFor(model!!, "ai", ps)
-	}
+    @Test
+    fun testCIHypermapBaroque() {
+        testCIHypermap(model!!, "baroque", ps)
+    }
 
-	@Test
-	fun testCIBaroque() {
-		testCILexesFor(model!!, "baroque", ps)
-	}
+    @Test
+    fun testCIAi() {
+        testCILexesFor(model!!, "ai", ps)
+    }
 
-	@Test
-	fun testCIWest3() {
-		testCILexesFor3(model!!, "West", ps)
-	}
+    @Test
+    fun testCIBaroque() {
+        testCILexesFor(model!!, "baroque", ps)
+    }
 
-	@Test
-	fun testCIBaroque3() {
-		testCILexesFor3(model!!, "Baroque", ps)
-	}
+    @Test
+    fun testCIWest3() {
+        testCILexesFor3(model!!, "West", ps)
+    }
 
-	@Test
-	fun testCIAi3() {
-		testCILexesFor3(model!!, "Ai", ps)
-	}
+    @Test
+    fun testCIBaroque3() {
+        testCILexesFor3(model!!, "Baroque", ps)
+    }
 
-	@Test
-	fun testCIAbsolute3() {
-		testCILexesFor3(model!!, "Absolute", ps)
-	}
+    @Test
+    fun testCIAi3() {
+        testCILexesFor3(model!!, "Ai", ps)
+    }
 
-	companion object {
+    @Test
+    fun testCIAbsolute3() {
+        testCILexesFor3(model!!, "Absolute", ps)
+    }
 
-		@JvmStatic
-		@BeforeClass
-		fun init() {
-			LibTestsWndbCommon.init()
-			checkNotNull(model)
-		}
-	}
+    companion object {
+
+        @JvmStatic
+        @BeforeClass
+        fun init() {
+            LibTestsWndbCommon.init()
+            checkNotNull(model)
+        }
+    }
 }

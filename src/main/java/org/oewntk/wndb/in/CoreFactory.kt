@@ -15,48 +15,48 @@ import java.util.function.Supplier
  * @property inDir WNDB dir
  */
 class CoreFactory(
-	private val inDir: File
+    private val inDir: File,
 ) : Supplier<CoreModel?> {
 
-	override fun get(): CoreModel? {
-		try {
-			return Parser(inDir) //
-				.parseCoreModel() //
-				.generateInverseRelations() //
-				.setModelSource(inDir)
-		} catch (e: IOException) {
-			e.printStackTrace(Tracing.psErr)
-			return null
-		} catch (e: ParsePojoException) {
-			e.printStackTrace(Tracing.psErr)
-			return null
-		}
-	}
+    override fun get(): CoreModel? {
+        try {
+            return Parser(inDir) //
+                .parseCoreModel() //
+                .generateInverseRelations() //
+                .setModelSource(inDir)
+        } catch (e: IOException) {
+            e.printStackTrace(Tracing.psErr)
+            return null
+        } catch (e: ParsePojoException) {
+            e.printStackTrace(Tracing.psErr)
+            return null
+        }
+    }
 
-	companion object {
+    companion object {
 
-		/**
-		 * Make core model
-		 *
-		 * @param dirPath WNDB dir path
-		 * @return core model
-		 */
-		private fun makeCoreModel(dirPath: String): CoreModel? {
-			val inDir = File(dirPath)
-			return CoreFactory(inDir).get()
-		}
+        /**
+         * Make core model
+         *
+         * @param dirPath WNDB dir path
+         * @return core model
+         */
+        private fun makeCoreModel(dirPath: String): CoreModel? {
+            val inDir = File(dirPath)
+            return CoreFactory(inDir).get()
+        }
 
-		/**
-		 * Main
-		 *
-		 * @param args command-line arguments
-		 */
-		@JvmStatic
-		fun main(args: Array<String>) {
-			for (arg in args) {
-				val model = makeCoreModel(arg)
-				Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n", model!!.source, model.info(), model.counts())
-			}
-		}
-	}
+        /**
+         * Main
+         *
+         * @param args command-line arguments
+         */
+        @JvmStatic
+        fun main(args: Array<String>) {
+            for (arg in args) {
+                val model = makeCoreModel(arg)
+                Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n", model!!.source, model.info(), model.counts())
+            }
+        }
+    }
 }
