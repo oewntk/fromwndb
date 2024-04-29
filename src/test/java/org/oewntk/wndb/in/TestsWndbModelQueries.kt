@@ -63,6 +63,7 @@ class TestsWndbModelQueries {
 	}
 
 	companion object {
+
 		@JvmStatic
 		@BeforeClass
 		fun init() {

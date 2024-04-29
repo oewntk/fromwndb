@@ -77,6 +77,7 @@ class TestsWndbModelLexGroups {
 	}
 
 	companion object {
+
 		@JvmStatic
 		@BeforeClass
 		fun init() {

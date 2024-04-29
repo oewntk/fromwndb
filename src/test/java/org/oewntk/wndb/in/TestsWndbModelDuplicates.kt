@@ -35,6 +35,7 @@ class TestsWndbModelDuplicates {
 	}
 
 	companion object {
+
 		@JvmStatic
 		@BeforeClass
 		fun init() {

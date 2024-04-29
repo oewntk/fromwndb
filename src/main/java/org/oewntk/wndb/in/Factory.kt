@@ -71,7 +71,6 @@ class Factory(
 		 * @param args command-line arguments
 		 * @return core model
 		 */
-		@JvmStatic
 		fun makeModel(args: Array<String>): Model? {
 			val inDir = File(args[0])
 			val inDir2 = File(args[1])

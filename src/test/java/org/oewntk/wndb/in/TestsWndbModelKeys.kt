@@ -144,6 +144,7 @@ class TestsWndbModelKeys {
 	}
 
 	companion object {
+
 		@JvmStatic
 		@BeforeClass
 		fun init() {
