@@ -32,7 +32,12 @@ class Factory(
             // tag counts
             val senseToTagCounts: Collection<Pair<String, TagCount>> = SenseToTagCountsParser(inDir).parse()
 
-            return Model(coreModel, verbFramesById, verbTemplatesById, senseToVerbTemplates, senseToTagCounts).setSources(inDir, inDir2)
+            return Model(coreModel, verbFramesById, verbTemplatesById, senseToVerbTemplates, senseToTagCounts)
+                .apply {
+                    source = inDir
+                    source2 = inDir2
+                }
+
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
             return null
