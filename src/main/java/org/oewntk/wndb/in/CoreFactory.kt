@@ -23,7 +23,7 @@ class CoreFactory(
             return Parser(inDir) 
                 .parseCoreModel() 
                 .generateInverseRelations() 
-                .setModelSource(inDir)
+                .apply { source = inDir }
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
             return null
