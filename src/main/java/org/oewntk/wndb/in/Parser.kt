@@ -189,7 +189,7 @@ class Parser(
                 val synset = pojoSynsetsById[synsetId]
                 val members = synset!!.cSLemmas
                 members
-                    .filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) } //
+                    .filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) } 
                     .forEach { member: LemmaCS ->
                         val memberLemma = member.toString()
                         // key
@@ -295,10 +295,10 @@ class Parser(
         val pos = mapping.pos.toChar()
         val morph = mapping.morph.toString()
         val lemmas = mapping.lemmas
-        lemmas.forEach(Consumer { lemma: Lemma ->  //
-            lemmaToMorphs //
-                .computeIfAbsent(lemma.toString()) { HashMap() } //
-                .computeIfAbsent(pos) { TreeSet() } //
+        lemmas.forEach(Consumer { lemma: Lemma ->  
+            lemmaToMorphs 
+                .computeIfAbsent(lemma.toString()) { HashMap() } 
+                .computeIfAbsent(pos) { TreeSet() } 
                 .add(morph)
         })
     }

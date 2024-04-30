@@ -20,9 +20,9 @@ class CoreFactory(
 
     override fun get(): CoreModel? {
         try {
-            return Parser(inDir) //
-                .parseCoreModel() //
-                .generateInverseRelations() //
+            return Parser(inDir) 
+                .parseCoreModel() 
+                .generateInverseRelations() 
                 .setModelSource(inDir)
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
