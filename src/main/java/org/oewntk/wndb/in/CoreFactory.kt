@@ -4,6 +4,7 @@
 package org.oewntk.wndb.`in`
 
 import org.oewntk.model.CoreModel
+import org.oewntk.model.ModelInfo
 import org.oewntk.pojos.ParsePojoException
 import java.io.File
 import java.io.IOException
@@ -55,7 +56,7 @@ class CoreFactory(
         fun main(args: Array<String>) {
             for (arg in args) {
                 val model = makeCoreModel(arg)
-                Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n", model!!.source, model.info(), model.counts())
+                Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n", model!!.source, model.info(), ModelInfo.counts(model))
             }
         }
     }
