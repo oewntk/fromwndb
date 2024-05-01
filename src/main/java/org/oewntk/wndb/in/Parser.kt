@@ -295,12 +295,12 @@ class Parser(
         val pos = mapping.pos.toChar()
         val morph = mapping.morph.toString()
         val lemmas = mapping.lemmas
-        lemmas.forEach(Consumer { lemma: Lemma ->  
+        lemmas.forEach {
             lemmaToMorphs 
-                .computeIfAbsent(lemma.toString()) { HashMap() } 
+                .computeIfAbsent(it.toString()) { HashMap() }
                 .computeIfAbsent(pos) { TreeSet() } 
                 .add(morph)
-        })
+        }
     }
 
     /**
