@@ -318,7 +318,7 @@ class Parser(
                     lexes2
                         .filter { it.partOfSpeech == pos }
                         .forEach {
-                            it.forms = morphs.toTypedArray()
+                            it.forms = morphs.toSet()
                         }
                 }
             }
