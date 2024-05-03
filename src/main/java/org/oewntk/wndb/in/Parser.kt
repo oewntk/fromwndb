@@ -155,8 +155,8 @@ class Parser(
         }
 
         // store relations by key
-        val synset = pojoSynsetsById[sense.synsetId]
-        synset?.relations.let {
+        val synset = pojoSynsetsById[sense.synsetId]!!
+        synset.relations.let {
             relationsByKey[key] = it!!
         }
     }
@@ -189,7 +189,7 @@ class Parser(
                 val synset = pojoSynsetsById[synsetId]
                 val members = synset!!.cSLemmas
                 members
-                    .filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) } 
+                    .filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) }
                     .forEach { member: LemmaCS ->
                         val memberLemma = member.toString()
                         // key
@@ -296,9 +296,9 @@ class Parser(
         val morph = mapping.morph.toString()
         val lemmas = mapping.lemmas
         lemmas.forEach {
-            lemmaToMorphs 
+            lemmaToMorphs
                 .computeIfAbsent(it.toString()) { HashMap() }
-                .computeIfAbsent(pos) { TreeSet() } 
+                .computeIfAbsent(pos) { TreeSet() }
                 .add(morph)
         }
     }
@@ -309,18 +309,16 @@ class Parser(
      * @param model         model
      * @param lemmaToMorphs lemma to morphs map
      */
-    private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<Char, TreeSet<String>>>) {
+    private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<Char, Set<String>>>) {
         val lexByLemma = model.lexesByLemma!!
         lemmaToMorphs.forEach { (lemma, map2) ->
             map2.forEach { (pos, morphs) ->
-                val lexes = lexByLemma[lemma]
-                lexes?.let { lexes2 ->
-                    lexes2
-                        .filter { it.partOfSpeech == pos }
-                        .forEach {
-                            it.forms = morphs.toSet()
-                        }
-                }
+                val lexes = lexByLemma[lemma]!!
+                lexes
+                    .filter { it.partOfSpeech == pos }
+                    .forEach {
+                        it.forms = morphs.toSet()
+                    }
             }
         }
     }
@@ -447,8 +445,8 @@ class Parser(
         fun buildVerbFrames(synset: Synset, lemma: String): Array<String>? {
             val verbFrames = synset.verbFrames ?: return null
             return verbFrames
-                .filter { it2 ->
-                    it2.lemmas
+                .filter { verbFrame ->
+                    verbFrame.lemmas
                         .map { it.toString() }
                         .any { it == lemma }
                 }
