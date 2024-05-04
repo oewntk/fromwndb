@@ -71,7 +71,6 @@ class TestsWndbModelLexGroups {
         testCILexesFor3(model!!, "Absolute", ps)
     }
 
-
     @Test
     fun testCIHypermapWest() {
         testCIHypermap(lexHyperMap, "west", ps)
