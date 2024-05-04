@@ -156,8 +156,8 @@ class Parser(
 
         // store relations by key
         val synset = pojoSynsetsById[sense.synsetId]!!
-        synset.relations.let {
-            relationsByKey[key] = it!!
+        synset.relations?.let {
+            relationsByKey[key] = it
         }
     }
 
