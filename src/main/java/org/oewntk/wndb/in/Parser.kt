@@ -313,10 +313,10 @@ class Parser(
         val lexByLemma = model.lexesByLemma!!
         lemmaToMorphs.forEach { (lemma, map2) ->
             map2.forEach { (pos, morphs) ->
-                val lexes = lexByLemma[lemma]!!
+                val lexes = lexByLemma[lemma]
                 lexes
-                    .filter { it.partOfSpeech == pos }
-                    .forEach {
+                    ?.filter { it.partOfSpeech == pos }
+                    ?.forEach {
                         it.forms = morphs.toSet()
                     }
             }
