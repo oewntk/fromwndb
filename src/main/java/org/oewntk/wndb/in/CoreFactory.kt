@@ -24,7 +24,7 @@ class CoreFactory(
             return Parser(inDir)
                 .parseCoreModel()
                 .generateInverseRelations()
-                .apply { source = inDir }
+                .apply { source = inDir.absolutePath }
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
             return null
