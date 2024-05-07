@@ -214,19 +214,21 @@ class Parser(
 
                         // collect lex
                         val wpKey = from(memberLemma, type)
-                        val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null).apply { senses = ArrayList() } }
+                        val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null) }
+
+                        // collect sense in lex
+                        lex.senseKeys.add(sensekey)
 
                         // senses
                         val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
-                        if (tagCnt!!.tagCount != 0) {
-                            modelSense.tagCount = TagCount(tagCnt.senseNum, tagCnt.tagCount)
-                        }
-
-                        // collect sense in lex
-                        lex.senses.add(modelSense)
 
                         // collect in senses
                         senses.add(modelSense)
+
+                        // tag count
+                        if (tagCnt!!.tagCount != 0) {
+                            modelSense.tagCount = TagCount(tagCnt.senseNum, tagCnt.tagCount)
+                        }
                     }
             }
     }

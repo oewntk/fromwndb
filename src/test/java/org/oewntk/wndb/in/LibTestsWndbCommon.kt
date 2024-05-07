@@ -5,7 +5,6 @@ package org.oewntk.wndb.`in`
 
 import org.junit.Assert
 import org.oewntk.model.CoreModel
-import org.oewntk.model.ModelInfo
 import java.io.File
 import java.io.PrintStream
 
@@ -33,7 +32,5 @@ object LibTestsWndbCommon {
             model = CoreFactory(inDir).get()
         }
         checkNotNull(model)
-        ps.println(model!!.info())
-        ps.println(ModelInfo.counts(model!!))
     }
 }
