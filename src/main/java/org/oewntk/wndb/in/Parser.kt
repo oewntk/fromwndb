@@ -118,7 +118,7 @@ class Parser(
         val examples = synset.gloss.samples
         val relations = buildSynsetRelations(synset.relations)
 
-        val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations)
+        val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, relations)
         synsets.add(modelSynset)
         pojoSynsetsById[synset.id] = synset
     }
@@ -214,13 +214,13 @@ class Parser(
 
                         // collect lex
                         val wpKey = from(memberLemma, type)
-                        val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString(), null) }
+                        val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString()) }
 
                         // collect sense in lex
                         lex.senseKeys.add(sensekey)
 
                         // senses
-                        val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
+                        val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), verbFrames, adjPosition, senseRelations)
 
                         // collect in senses
                         senses.add(modelSense)
