@@ -36,8 +36,8 @@ class Parser(
      * Key which is to represent sense
      */
     internal class Key(
-        private val lemma: String,
-        private val pos: Char,
+        private val lemma: LemmaType,
+        private val pos: PosType,
         private val offset: Long,
     ) {
 
