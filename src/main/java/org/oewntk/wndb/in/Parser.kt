@@ -37,7 +37,7 @@ class Parser(
      */
     internal class Key(
         private val lemma: LemmaType,
-        private val pos: PosType,
+        private val pos: PosId,
         private val offset: Long,
     ) {
 
