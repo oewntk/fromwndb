@@ -19,12 +19,12 @@ class TestsWndbModelWords {
 
     @Test
     fun testScanLexesForTestWords() {
-        testScanLexesForTestWords(model!!, { lex: Lex -> Key.W_P_A.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
+        testScanLexesForTestWords(model!!, { lex: Lex -> Key.KeyLCP.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
     }
 
     @Test
     fun testScanLexesForTestWordsSorted() {
-        testScanLexesForTestWords(model!!, { lex: Lex -> Key.W_P_A.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
+        testScanLexesForTestWords(model!!, { lex: Lex -> Key.KeyLCP.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
     }
 
     @Test
