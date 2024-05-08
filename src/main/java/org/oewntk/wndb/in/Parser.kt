@@ -3,9 +3,10 @@
  */
 package org.oewntk.wndb.`in`
 
-import org.oewntk.model.*
-import org.oewntk.model.Key.W_P
-import org.oewntk.model.Key.W_P.Companion.from
+import org.oewntk.model.CoreModel
+import org.oewntk.model.Key.KeyLC
+import org.oewntk.model.Lex
+import org.oewntk.model.TagCount
 import org.oewntk.parse.DataParser
 import org.oewntk.parse.IndexParser
 import org.oewntk.parse.MorphParser
@@ -36,8 +37,8 @@ class Parser(
      * Key which is to represent sense
      */
     internal class Key(
-        private val lemma: LemmaType,
-        private val pos: PosId,
+        private val lemma: String,
+        private val pos: Char,
         private val offset: Long,
     ) {
 
@@ -67,7 +68,7 @@ class Parser(
     /**
      * Lexical units
      */
-    private val lexesByKey: MutableMap<W_P, Lex> = TreeMap()
+    private val lexesByKey: MutableMap<KeyLC, Lex> = TreeMap()
 
     /**
      * Senses
@@ -213,8 +214,8 @@ class Parser(
                         val adjPosition = if (pos != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
 
                         // collect lex
-                        val wpKey = from(memberLemma, type)
-                        val lex = lexesByKey.computeIfAbsent(wpKey) { Lex(memberLemma, type.toString()) }
+                        val lcKey = KeyLC.from(memberLemma, type)
+                        val lex = lexesByKey.computeIfAbsent(lcKey) { Lex(memberLemma, type.toString()) }
 
                         // collect sense in lex
                         lex.senseKeys.add(sensekey)
@@ -241,7 +242,6 @@ class Parser(
      */
     private fun buildSenseRelations(member: String, relations: Array<Relation>?): MutableMap<String, MutableSet<String>>? {
         require(!member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ")) { member }
-
         if (!relations.isNullOrEmpty()) {
             val map = relations
                 .filterIsInstance<LexRelation>() // discard non-lexical
