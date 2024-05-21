@@ -12,9 +12,6 @@ import org.oewntk.parse.IndexParser
 import org.oewntk.parse.MorphParser
 import org.oewntk.parse.SenseParser
 import org.oewntk.pojos.*
-import org.oewntk.pojos.Sense
-import org.oewntk.pojos.Synset
-import org.oewntk.pojos.SynsetId
 import org.oewntk.utils.Tracing
 import java.io.File
 import java.io.IOException
@@ -218,7 +215,7 @@ class Parser(
                         val lex = lexesByKey.computeIfAbsent(lcKey) { Lex(memberLemma, type.toString()) }
 
                         // collect sense in lex
-                        lex.senseKeys.add(sensekey)
+                        lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
                         val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), verbFrames, adjPosition, senseRelations)
