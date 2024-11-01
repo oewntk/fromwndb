@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$" dumb="true">
+      <excludeFolder url="file://$MODULE_DIR$/wndb" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb2" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb31" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb_re" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb_re_re" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb_xml" />
+      <excludeFolder url="file://$MODULE_DIR$/wndbxx" />
+      <excludeFolder url="file://$MODULE_DIR$/wndbxx_compat" />
+    </content>
+  </component>
+</module>
