@@ -113,10 +113,10 @@ class Parser(
             .map { it.toString() }
             .toTypedArray()
         val definitions = arrayOf(synset.gloss.definition)
-        val examples = synset.gloss.samples
+        val examples: Array<Pair<String, String?>> = synset.gloss.samples.map { it to null }.toTypedArray()
         val relations = buildSynsetRelations(synset.relations)
 
-        val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, relations)
+        val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations)
         synsets.add(modelSynset)
         pojoSynsetsById[synset.id] = synset
     }
@@ -218,7 +218,7 @@ class Parser(
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
-                        val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), verbFrames, adjPosition, senseRelations)
+                        val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
 
                         // collect in senses
                         senses.add(modelSense)
