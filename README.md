@@ -19,4 +19,4 @@ Project [fromwndb](https://github.com/oewntk/fromwndb)
 
 		<groupId>io.github.oewntk</groupId>
 		<artifactId>fromwndb</artifactId>
-		<version>2.2.2</version>
+		<version>2.3.1</version>
