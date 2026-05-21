@@ -16,22 +16,22 @@ class TestsWndbModelDuplicates {
 
     @Test
     fun testKeyOEWN() {
-        testDuplicatesForKeyOEWN(model!!, ps)
+        testDuplicatesForKeyOEWN(model, ps)
     }
 
     @Test
     fun testKeyPos() {
-        testDuplicatesForKeyPos(model!!, ps)
+        testDuplicatesForKeyPos(model, ps)
     }
 
     @Test
     fun testKeyIC() {
-        testDuplicatesForKeyIC(model!!, ps)
+        testDuplicatesForKeyIC(model, ps)
     }
 
     @Test
     fun testKeyPWN() {
-        testDuplicatesForKeyPWN(model!!, ps)
+        testDuplicatesForKeyPWN(model, ps)
     }
 
     companion object {
@@ -39,8 +39,7 @@ class TestsWndbModelDuplicates {
         @JvmStatic
         @BeforeClass
         fun init() {
-            LibTestsWndbCommon.init()
-            checkNotNull(model)
+            model
         }
     }
 }

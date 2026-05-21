@@ -14,52 +14,52 @@ class TestsWndbModelQueries {
 
     @Test
     fun testRowByType() {
-        testWordByType(model!!, "row", ps)
+        testWordByType(model, "row", ps)
     }
 
     @Test
     fun testRowByPos() {
-        testWordByType(model!!, "row", ps)
+        testWordByType(model, "row", ps)
     }
 
     @Test
     fun testRowByTypeAndPronunciation() {
-        testWordByTypeAndPronunciation(model!!, "row", ps)
+        testWordByTypeAndPronunciation(model, "row", ps)
     }
 
     @Test
     fun testRowByPosAndPronunciation() {
-        testWordByTypeAndPronunciation(model!!, "row", ps)
+        testWordByTypeAndPronunciation(model, "row", ps)
     }
 
     @Test
     fun testCriticalByType() {
-        testWordByType(model!!, "critical", ps)
+        testWordByType(model, "critical", ps)
     }
 
     @Test
     fun testCriticalByPos() {
-        testWordByType(model!!, "critical", ps)
+        testWordByType(model, "critical", ps)
     }
 
     @Test
     fun testBassByPos() {
-        testWordByType(model!!, "bass", ps)
+        testWordByType(model, "bass", ps)
     }
 
     @Test
     fun testBaroqueByPos() {
-        testWordByType(model!!, "baroque", ps)
+        testWordByType(model, "baroque", ps)
     }
 
     @Test
     fun testBaroqueCSByPos() {
-        testWordByType(model!!, "Baroque", ps)
+        testWordByType(model, "Baroque", ps)
     }
 
     @Test
     fun testGaloreByPos() {
-        testWordByType(model!!, "galore", ps)
+        testWordByType(model, "galore", ps)
     }
 
     companion object {
@@ -67,8 +67,7 @@ class TestsWndbModelQueries {
         @JvmStatic
         @BeforeClass
         fun init() {
-            LibTestsWndbCommon.init()
-            checkNotNull(model)
+            model
         }
     }
 }

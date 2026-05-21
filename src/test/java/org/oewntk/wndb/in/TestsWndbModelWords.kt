@@ -19,72 +19,72 @@ class TestsWndbModelWords {
 
     @Test
     fun testScanLexesForTestWords() {
-        testScanLexesForTestWords(model!!, { lex: Lex -> Key.KeyLCP.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
+        testScanLexesForTestWords(model, { lex: Lex -> Key.KeyLCP.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
     }
 
     @Test
     fun testScanLexesForTestWordsSorted() {
-        testScanLexesForTestWords(model!!, { lex: Lex -> Key.KeyLCP.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
+        testScanLexesForTestWords(model, { lex: Lex -> Key.KeyLCP.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
     }
 
     @Test
     fun testBass() {
-        testWord("bass", model!!, ps)
+        testWord("bass", model, ps)
     }
 
     @Test
     fun testRow() {
-        testWord("row", model!!, ps)
+        testWord("row", model, ps)
     }
 
     @Test
     fun testBaroque() {
-        testWords(model!!, ps, "baroque", "Baroque")
+        testWords(model, ps, "baroque", "Baroque")
     }
 
     @Test
     fun testEarth() {
-        testWords(model!!, ps, "earth", "Earth")
+        testWords(model, ps, "earth", "Earth")
     }
 
     @Test
     fun testCritical() {
-        testWord("critical", 'a', model!!, ps)
+        testWord("critical", 'a', model, ps)
     }
 
     @Test
     fun testHollywood() {
-        testWord("Hollywood", 'a', model!!, ps)
+        testWord("Hollywood", 'a', model, ps)
     }
 
     @Test
     fun testVictorian() {
-        testWord("Victorian", 'a', model!!, ps)
+        testWord("Victorian", 'a', model, ps)
     }
 
     @Test
     fun testAllied() {
-        testWord("allied", 'a', model!!, ps)
+        testWord("allied", 'a', model, ps)
     }
 
     @Test
     fun testAlliedUpper() {
-        testWord("Allied", 'a', model!!, ps)
+        testWord("Allied", 'a', model, ps)
     }
 
     @Test
     fun testAbsent() {
-        testWord("absent", 'a', model!!, ps)
+        testWord("absent", 'a', model, ps)
     }
 
     @Test
     fun testApocryphal() {
-        testWord("apocryphal", 'a', model!!, ps)
+        testWord("apocryphal", 'a', model, ps)
     }
 
     @Test
     fun testUsed() {
-        testWord("used", 'a', model!!, ps)
+        testWord("used", 'a', model, ps)
     }
 
     companion object {
@@ -96,8 +96,7 @@ class TestsWndbModelWords {
         @JvmStatic
         @BeforeClass
         fun init() {
-            LibTestsWndbCommon.init()
-            checkNotNull(model)
+            model
         }
     }
 }

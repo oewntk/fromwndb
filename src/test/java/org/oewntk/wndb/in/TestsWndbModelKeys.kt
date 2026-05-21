@@ -24,7 +24,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testMobile() {
-        val r = testMobileNoPronunciation(model!!, ps)
+        val r = testMobileNoPronunciation(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(1, r[1].toLong())
         assertEquals(2, r[2].toLong())
@@ -34,7 +34,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testEarthMulti() {
-        val r = testEarthMulti(model!!, ps)
+        val r = testEarthMulti(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(1, r[1].toLong())
         assertEquals(2, r[2].toLong())
@@ -44,7 +44,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testEarthMono() {
-        val r = testEarthMono(model!!, ps)
+        val r = testEarthMono(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(1, r[1].toLong())
         assertEquals(1, r[2].toLong())
@@ -54,7 +54,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testBaroqueMulti() {
-        val r = testBaroqueMulti(model!!, ps)
+        val r = testBaroqueMulti(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(1, r[1].toLong())
         assertEquals(2, r[2].toLong())
@@ -76,7 +76,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testBaroqueMono() {
-        val r = testBaroqueMono(model!!, ps)
+        val r = testBaroqueMono(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(1, r[1].toLong())
         assertEquals(1, r[2].toLong())
@@ -98,7 +98,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testCriticalMulti() {
-        val r = testCriticalMulti(model!!, ps)
+        val r = testCriticalMulti(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(2, r[1].toLong())
         assertEquals(1, r[2].toLong())
@@ -108,7 +108,7 @@ class TestsWndbModelKeys {
 
     @Test
     fun testCriticalMono() {
-        val r = testCriticalMono(model!!, ps)
+        val r = testCriticalMono(model, ps)
         assertEquals(1, r[0].toLong())
         assertEquals(1, r[1].toLong())
         assertEquals(1, r[2].toLong())
@@ -149,8 +149,7 @@ class TestsWndbModelKeys {
         @JvmStatic
         @BeforeClass
         fun init() {
-            LibTestsWndbCommon.init()
-            checkNotNull(model)
+            model
         }
     }
 }

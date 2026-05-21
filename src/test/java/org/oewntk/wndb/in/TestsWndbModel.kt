@@ -13,8 +13,8 @@ class TestsWndbModel {
 
     @Test
     fun testModelInfo() {
-        val info = model!!.info()
-        val counts = ModelInfo.counts(model!!)
+        val info = model.info()
+        val counts = ModelInfo.counts(model)
         ps.println("$info\n$counts")
     }
 
@@ -23,8 +23,7 @@ class TestsWndbModel {
         @JvmStatic
         @BeforeClass
         fun init() {
-            LibTestsWndbCommon.init()
-            checkNotNull(model)
+            model
         }
     }
 }
