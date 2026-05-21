@@ -6,6 +6,7 @@ package org.oewntk.wndb.`in`
 import org.oewntk.model.CoreModel
 import org.oewntk.model.Key.KeyLC
 import org.oewntk.model.Lex
+import org.oewntk.model.PartOfSpeech
 import org.oewntk.model.TagCount
 import org.oewntk.parse.DataParser
 import org.oewntk.parse.IndexParser
@@ -308,11 +309,10 @@ class Parser(
      * @param model         model
      * @param lemmaToMorphs lemma to morphs map
      */
-    private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<Char, Set<String>>>) {
-        val lexByLemma = model.lexesByLemma!!
+    private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<PartOfSpeech, Set<String>>>) {
         lemmaToMorphs.forEach { (lemma, map2) ->
             map2.forEach { (pos, morphs) ->
-                val lexes = lexByLemma[lemma]
+                val lexes = model.lexFinder(lemma)
                 lexes
                     ?.filter { it.partOfSpeech == pos }
                     ?.forEach {
