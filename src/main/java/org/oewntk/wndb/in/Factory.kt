@@ -19,6 +19,7 @@ import java.util.function.Supplier
 class Factory(
     private val inDir: File,
     private val inDir2: File,
+    val verbose: Boolean = false,
 ) : Supplier<Model?> {
 
     override fun get(): Model? {
