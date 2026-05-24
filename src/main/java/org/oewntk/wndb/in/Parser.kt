@@ -214,7 +214,7 @@ class Parser(
 
                         // collect lex
                         val lcKey = KeyLC.from(memberLemma, type.toCategory())
-                        val lex = lexesByKey.computeIfAbsent(lcKey) { Lex(memberLemma, type.toString()) }
+                        val lex = lexesByKey.computeIfAbsent(lcKey) { Lex(memberLemma, type.value.toString()) }
 
                         // collect sense in lex
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
@@ -245,7 +245,7 @@ class Parser(
             val map = relations
                 .filterIsInstance<LexRelation>() // discard non-lexical
                 .filter { member.equals((it).fromWord.lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
-                .map { it.type.name2 to toSensekey(it) } // (type: sensekey)
+                .map { it.rel.name2 to toSensekey(it) } // (type: sensekey)
                 .groupBy { it.first }
                 .mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: sensekeys
                 .toMutableMap()
@@ -378,7 +378,7 @@ class Parser(
             if (!relations.isNullOrEmpty()) {
                 val map = relations
                     .filter { it !is LexRelation }
-                    .map { it.type.name2 to it.toSynsetId.toString() } // (type, synsetid)
+                    .map { it.rel.name2 to it.toSynsetId.toString() } // (type, synsetid)
                     .groupBy { it.first }
                     .mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: synsetids
                     .toMutableMap()
