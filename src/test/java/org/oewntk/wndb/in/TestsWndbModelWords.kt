@@ -12,6 +12,7 @@ import org.oewntk.model.LibTestModel.makeSortedIndexMap
 import org.oewntk.model.LibTestModel.testScanLexesForTestWords
 import org.oewntk.model.LibTestModel.testWord
 import org.oewntk.model.LibTestModel.testWords
+import org.oewntk.model.PartOfSpeech
 import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
 import org.oewntk.wndb.`in`.LibTestsWndbCommon.ps
 
@@ -49,42 +50,42 @@ class TestsWndbModelWords {
 
     @Test
     fun testCritical() {
-        testWord("critical", 'a', model, ps)
+        testWord("critical", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testHollywood() {
-        testWord("Hollywood", 'a', model, ps)
+        testWord("Hollywood", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testVictorian() {
-        testWord("Victorian", 'a', model, ps)
+        testWord("Victorian", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testAllied() {
-        testWord("allied", 'a', model, ps)
+        testWord("allied", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testAlliedUpper() {
-        testWord("Allied", 'a', model, ps)
+        testWord("Allied", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testAbsent() {
-        testWord("absent", 'a', model, ps)
+        testWord("absent", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testApocryphal() {
-        testWord("apocryphal", 'a', model, ps)
+        testWord("apocryphal", PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testUsed() {
-        testWord("used", 'a', model, ps)
+        testWord("used", PartOfSpeech.A, model, ps)
     }
 
     companion object {

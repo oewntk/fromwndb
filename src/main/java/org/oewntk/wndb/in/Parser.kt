@@ -3,16 +3,17 @@
  */
 package org.oewntk.wndb.`in`
 
-import org.oewntk.model.CoreModel
+import org.oewntk.model.*
 import org.oewntk.model.Key.KeyLC
-import org.oewntk.model.Lex
-import org.oewntk.model.PartOfSpeech
-import org.oewntk.model.TagCount
 import org.oewntk.parse.DataParser
 import org.oewntk.parse.IndexParser
 import org.oewntk.parse.MorphParser
 import org.oewntk.parse.SenseParser
 import org.oewntk.pojos.*
+import org.oewntk.pojos.Relation
+import org.oewntk.pojos.Sense
+import org.oewntk.pojos.Synset
+import org.oewntk.pojos.SynsetId
 import org.oewntk.utils.Tracing
 import java.io.File
 import java.io.IOException
@@ -117,7 +118,7 @@ class Parser(
         val examples: Array<Pair<String, String?>> = synset.gloss.samples.map { it to null }.toTypedArray()
         val relations = buildSynsetRelations(synset.relations)
 
-        val modelSynset = org.oewntk.model.Synset(synsetId, type, domain, members, definitions, examples, null, relations)
+        val modelSynset = org.oewntk.model.Synset(synsetId, SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
         synsets.add(modelSynset)
         pojoSynsetsById[synset.id] = synset
     }
@@ -205,21 +206,21 @@ class Parser(
                         val sensekey = checkNotNull(sensekeyByKey[key]) { "no sensekey for $key" }
 
                         // type
-                        val type = if (pos != 'a') pos else (if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) 's' else 'a')
+                        val type = SynsetType.fromChar(if (pos != 'a') pos else (if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) 's' else 'a'))
 
                         // ver frames and adj positions
                         val verbFrames = if (pos != 'v') null else buildVerbFrames(synset, memberLemma)
                         val adjPosition = if (pos != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
 
                         // collect lex
-                        val lcKey = KeyLC.from(memberLemma, type)
+                        val lcKey = KeyLC.from(memberLemma, type.toCategory())
                         val lex = lexesByKey.computeIfAbsent(lcKey) { Lex(memberLemma, type.toString()) }
 
                         // collect sense in lex
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
-                        val modelSense = org.oewntk.model.Sense(sensekey, lex, pos, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
+                        val modelSense = org.oewntk.model.Sense(sensekey, lex, type, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
 
                         // collect in senses
                         senses.add(modelSense)
@@ -286,13 +287,13 @@ class Parser(
     /**
      * Lemma to set of morphs
      */
-    private val lemmaToMorphs: MutableMap<String, MutableMap<Char, TreeSet<String>>> = HashMap()
+    private val lemmaToMorphs: MutableMap<String, MutableMap<PartOfSpeech, TreeSet<String>>> = HashMap()
 
     /**
      * Morph consumer
      */
     private val morphConsumer = Consumer { mapping: MorphMapping ->
-        val pos = mapping.pos.toChar()
+        val pos = PartOfSpeech.fromChar(mapping.pos.toChar())
         val morph = mapping.morph.toString()
         val lemmas = mapping.lemmas
         lemmas.forEach {
