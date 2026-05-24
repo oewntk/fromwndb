@@ -17,11 +17,12 @@ import java.util.function.Supplier
  */
 class CoreFactory(
     private val inDir: File,
+    private val verbose: Boolean = false
 ) : Supplier<CoreModel?> {
 
     override fun get(): CoreModel? {
         try {
-            return Parser(inDir)
+            return Parser(inDir, verbose = verbose)
                 .parseCoreModel()
                 .generateInverseRelations()
                 .apply { source = inDir.absolutePath }

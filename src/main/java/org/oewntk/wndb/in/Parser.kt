@@ -29,7 +29,8 @@ import kotlin.math.min
  * @property dir WN home dict directory
  */
 class Parser(
-    val dir: File,
+    private val dir: File,
+    private val verbose: Boolean = false
 ) {
 
     /**
