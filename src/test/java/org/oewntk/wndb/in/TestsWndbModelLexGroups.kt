@@ -7,7 +7,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.oewntk.model.Lemma
 import org.oewntk.model.Lex
-import org.oewntk.model.LexGroupings.hyperMapByLCLemmaByLemma
+import org.oewntk.model.Lex.Groups.groupByLCLemmaThenByKey2
 import org.oewntk.model.LibTestModelLexGroups.testCICounts
 import org.oewntk.model.LibTestModelLexGroups.testCICountsFromMap
 import org.oewntk.model.LibTestModelLexGroups.testCIHypermap
@@ -20,8 +20,6 @@ import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
 import org.oewntk.wndb.`in`.LibTestsWndbCommon.ps
 
 class TestsWndbModelLexGroups {
-
-    private val lexHyperMap: Map<LowerCasedLemma, Map<Lemma, Collection<Lex>>> by lazy { model.lexEntries.hyperMapByLCLemmaByLemma() }
 
     @Test
     fun testCIMultipleAll() {
@@ -73,14 +71,16 @@ class TestsWndbModelLexGroups {
         testCILexesFor3(model, "Absolute", ps)
     }
 
+    private val lexLCHyperMap: Map<LowerCasedLemma, Map<Lemma, Collection<Lex>>> by lazy { model.lexes.asSequence().groupByLCLemmaThenByKey2() }
+
     @Test
     fun testCIHypermapWest() {
-        testCIHypermap(lexHyperMap, "west", ps)
+        testCIHypermap(lexLCHyperMap, "west", ps)
     }
 
     @Test
     fun testCIHypermapBaroque() {
-        testCIHypermap(lexHyperMap, "baroque", ps)
+        testCIHypermap(lexLCHyperMap, "baroque", ps)
     }
 
     companion object {
