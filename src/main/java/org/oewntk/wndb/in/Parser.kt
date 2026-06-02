@@ -359,15 +359,14 @@ class Parser(
 
         // PRINT STREAMS
 
+        private val silent = if (System.getProperties().containsKey("VERBOSE")) false
+        else if (System.getProperties().containsKey("SILENT")) true
+        else true
+
         /**
          * Info print stream
          */
-        private val psi: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psInfo else Tracing.psNull
-
-        // /**
-        //  * Error print stream
-        //  */
-        // private val pse: PrintStream = if (!System.getProperties().containsKey("SILENT")) Tracing.psErr else Tracing.psNull
+        private val psi: PrintStream = if (!silent) Tracing.psInfo else Tracing.psNull
 
         /**
          * Build synset relations
