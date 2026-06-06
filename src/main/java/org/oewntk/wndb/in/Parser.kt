@@ -222,7 +222,7 @@ class Parser(
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
-                        val modelSense = ModelSense(sensekey, lex.key, sense.synsetId.toString(), type, indexInLex = index, null, verbFrames, adjPosition, senseRelations)
+                        val modelSense = ModelSense(sensekey, lex.key, sense.synsetId.toString(), indexInLex = index, null, verbFrames, adjPosition, senseRelations)
 
                         // collect in senses
                         senses.add(modelSense)
