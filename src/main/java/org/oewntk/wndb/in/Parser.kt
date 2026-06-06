@@ -3,17 +3,15 @@
  */
 package org.oewntk.wndb.`in`
 
-import org.oewntk.model.*
-import org.oewntk.model.Key.KeyLC
+import org.oewntk.model.CoreModel
+import org.oewntk.model.PartOfSpeech
+import org.oewntk.model.SynsetType
+import org.oewntk.model.TagCount
 import org.oewntk.parse.DataParser
 import org.oewntk.parse.IndexParser
 import org.oewntk.parse.MorphParser
 import org.oewntk.parse.SenseParser
 import org.oewntk.pojos.*
-import org.oewntk.pojos.Relation
-import org.oewntk.pojos.Sense
-import org.oewntk.pojos.Synset
-import org.oewntk.pojos.SynsetId
 import org.oewntk.utils.Tracing
 import java.io.File
 import java.io.IOException
@@ -22,6 +20,10 @@ import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
 import kotlin.math.min
+import org.oewntk.model.Lemma as ModelLemma
+import org.oewntk.model.Lex as ModelLex
+import org.oewntk.model.Sense as ModelSense
+import org.oewntk.model.Synset as ModelSynset
 
 /**
  * WNDB parser
@@ -68,17 +70,17 @@ class Parser(
     /**
      * Lexical units
      */
-    private val lexesByKey: MutableMap<KeyLC, Lex> = TreeMap()
+    private val lexesByKey: MutableMap<Pair<ModelLemma, SynsetType>, ModelLex> = TreeMap()
 
     /**
      * Senses
      */
-    private val senses: MutableCollection<org.oewntk.model.Sense> = ArrayList()
+    private val senses: MutableCollection<ModelSense> = ArrayList()
 
     /**
      * Synsets
      */
-    private val synsets: MutableCollection<org.oewntk.model.Synset> = ArrayList()
+    private val synsets: MutableCollection<ModelSynset> = ArrayList()
 
     // intermediate pojos
     /**
@@ -214,8 +216,8 @@ class Parser(
                         val adjPosition = if (pos != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
 
                         // collect lex
-                        val lcKey = KeyLC.from(memberLemma, type.toCategory())
-                        val lex = lexesByKey.computeIfAbsent(lcKey) { Lex(memberLemma, type.value.toString()) }
+                        val lexKey = memberLemma to type
+                        val lex = lexesByKey.computeIfAbsent(lexKey) { ModelLex(memberLemma, type.value.toString()) }
 
                         // collect sense in lex
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
@@ -347,7 +349,7 @@ class Parser(
         IndexParser.parseAllIndexes(dir, indexConsumer)
         MorphParser.parseAllMorphs(dir, morphConsumer)
 
-        val lexes: Collection<Lex> = ArrayList(lexesByKey.values) // TreeMap.Values are not serializable
+        val lexes: Collection<ModelLex> = ArrayList(lexesByKey.values) // TreeMap.Values are not serializable
         val model = CoreModel(lexes, senses, synsets)
         setMorphs(model, lemmaToMorphs)
         return model
