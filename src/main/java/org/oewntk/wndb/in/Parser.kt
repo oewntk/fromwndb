@@ -221,7 +221,7 @@ class Parser(
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
-                        val modelSense = org.oewntk.model.Sense(sensekey, lex, type, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
+                        val modelSense = org.oewntk.model.Sense(sensekey, lex.key, type, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
 
                         // collect in senses
                         senses.add(modelSense)
