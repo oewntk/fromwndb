@@ -34,7 +34,6 @@ class Parser(
     private val dir: File,
     private val verbose: Boolean = false
 ) {
-
     /**
      * Key which is to represent sense
      */
@@ -121,7 +120,7 @@ class Parser(
         val examples: Array<Pair<String, String?>> = synset.gloss.samples.map { it to null }.toTypedArray()
         val relations = buildSynsetRelations(synset.relations)
 
-        val modelSynset = org.oewntk.model.Synset(synsetId, SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
+        val modelSynset = ModelSynset(synsetId, SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
         synsets.add(modelSynset)
         pojoSynsetsById[synset.id] = synset
     }
@@ -223,7 +222,7 @@ class Parser(
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
-                        val modelSense = org.oewntk.model.Sense(sensekey, lex.key, type, index, sense.synsetId.toString(), null, verbFrames, adjPosition, senseRelations)
+                        val modelSense = ModelSense(sensekey, lex.key, sense.synsetId.toString(), type, index, null, verbFrames, adjPosition, senseRelations)
 
                         // collect in senses
                         senses.add(modelSense)
