@@ -100,7 +100,7 @@ class Factory(
             val dirPath2 = args[args.size - 1] // last
             for (i in 0 until args.size - 1) {
                 val model = makeModel(args[i], dirPath2)
-                Tracing.psInfo.printf("[Model] %s%n%s%n%s%n", model!!.sources.contentToString(), model.info(), ModelInfo.counts(model))
+                Tracing.psInfo.printf("[Model] %s%n%s%n%s%n", model!!, model.info(), ModelInfo.counts(model))
             }
         }
     }
