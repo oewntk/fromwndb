@@ -20,12 +20,12 @@ class TestsWndbModelWords {
 
     @Test
     fun testScanLexesForTestWords() {
-        testScanLexesForTestWords(model, { lex: Lex -> Key.FromLemmaCategoryPronunciation.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
+        testScanLexesForTestWords(model, { lex: Lex -> Key.UsingPronunciation.of_t(lex) }, { seq: Sequence<Key> -> makeIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
     }
 
     @Test
     fun testScanLexesForTestWordsSorted() {
-        testScanLexesForTestWords(model, { lex: Lex -> Key.FromLemmaCategoryPronunciation.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
+        testScanLexesForTestWords(model, { lex: Lex -> Key.UsingPronunciation.of_t(lex) }, { seq: Sequence<Key> -> makeSortedIndexMap(seq) }, testWords, PRINT_TEST_WORDS, ps)
     }
 
     @Test
