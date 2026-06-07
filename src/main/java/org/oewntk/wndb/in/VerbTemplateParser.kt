@@ -23,7 +23,7 @@ class VerbTemplateParser(
     @Throws(IOException::class)
     fun parse(): Collection<VerbTemplate> {
         val result: MutableCollection<VerbTemplate> = ArrayList()
-        parseVerbTemplates(File(inDir, "verbTemplates.txt"), result)
+        parseVerbTemplates(File(inDir, "templates.txt"), result)
         return result
     }
 
