@@ -6,7 +6,6 @@ package org.oewntk.wndb.`in`
 import org.oewntk.model.CoreModel
 import org.oewntk.model.PartOfSpeech
 import org.oewntk.model.SynsetType
-import org.oewntk.model.TagCount
 import org.oewntk.parse.DataParser
 import org.oewntk.parse.IndexParser
 import org.oewntk.parse.MorphParser
@@ -198,7 +197,7 @@ class Parser(
                         val key = Key(lemma, pos, sense.synsetId.offset)
 
                         // retrieve tag count
-                        val tagCnt = tagCntByKey[key]
+                        val tagCount = tagCntByKey[key]
 
                         // retrieve relations, build sense relations
                         val relations = relationsByKey[key]
@@ -222,14 +221,25 @@ class Parser(
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
 
                         // senses
-                        val modelSense = ModelSense(sensekey, lex.key, sense.synsetId.toString(), indexInLex = index, null, verbFrames, adjPosition, senseRelations)
+                        val modelSense = ModelSense(
+                            sensekey,
+                            lex.key,
+                            sense.synsetId.toString(),
+                            indexInLex = index,
+                            verbFrames = verbFrames,
+                            adjPosition = adjPosition,
+                            relations = senseRelations
+                        )
 
                         // collect in senses
                         senses.add(modelSense)
 
                         // tag count
-                        if (tagCnt!!.tagCount != 0) {
-                            modelSense.tagCount = TagCount(tagCnt.senseNum, tagCnt.tagCount)
+                        if (tagCount!!.tagCount != 0) {
+                            if (modelSense.indexInLex + 1 == tagCount.senseNum)
+                                modelSense.tagCount = tagCount.tagCount
+                            else
+                                Tracing.psErr.println("[W] Unmatched sensenum in $sense with tagcount $tagCount")
                         }
                     }
             }
