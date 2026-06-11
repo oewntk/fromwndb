@@ -236,15 +236,15 @@ class Parser(
 
                         // tag count
                         if (tagCount!!.tagCount != 0) {
-                            if (modelSense.indexInLex + 1 == tagCount.senseNum)
-                                modelSense.tagCount = tagCount.tagCount
-                            else
-                                Tracing.psErr.println("[W] Unmatched sensenum in $sense with tagcount $tagCount")
+                            modelSense.tagCount = tagCount.tagCount
+                            if (modelSense.indexInLex + 1 != tagCount.senseNum) {
+                                if (WARN_IF_SENSENUM_NOT_EQUAL_INDEX) Tracing.psErr.println("[W] Unequal sense index ${modelSense.indexInLex + 1} in $sense with sensenum ${tagCount.senseNum}")
+                                if (WARN_IF_SENSENUM_LESS_THAN_INDEX && modelSense.indexInLex + 1 > tagCount.senseNum) Tracing.psErr.println("[W] Sense index ${modelSense.indexInLex + 1} in $sense more than sensenum ${tagCount.senseNum}")
+                            }
                         }
                     }
             }
     }
-
     /**
      * Build sense relations
      *
@@ -367,6 +367,8 @@ class Parser(
     companion object {
 
         private const val LOG_TAGCOUNT_MERGE = false
+        private const val WARN_IF_SENSENUM_NOT_EQUAL_INDEX = false
+        private const val WARN_IF_SENSENUM_LESS_THAN_INDEX = true
 
         // PRINT STREAMS
 
