@@ -68,7 +68,7 @@ class Parser(
     /**
      * Lexical units
      */
-    private val lexesByKey: MutableMap<Pair<ModelLemma, SynsetType>, ModelLex> = TreeMap()
+    private val lexesByKey: MutableMap<Pair<ModelLemma, SynsetType>, ModelLex> = HashMap()
 
     /**
      * Senses
