@@ -46,7 +46,7 @@ class VerbFrameParser(
                     lineCount++
                     if (line.isNotEmpty() || line[0] != ' ') {
                         try {
-                            val fields = line.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                            val fields = line.split(" ".toRegex(), limit = 2).dropLastWhile { it.isEmpty() }.toTypedArray()
                             val field1 = fields[0]
                             val field2 = fields[1].trim { it <= ' ' }
                             verbFrames.add(VerbFrame(field1, field2))

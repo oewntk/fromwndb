@@ -23,7 +23,7 @@ class VerbTemplateParser(
     @Throws(IOException::class)
     fun parse(): Collection<VerbTemplate> {
         val result: MutableCollection<VerbTemplate> = ArrayList()
-        parseVerbTemplates(File(inDir, "templates.txt"), result)
+        parseVerbTemplates(File(inDir, "verbTemplates.txt"), result)
         return result
     }
 
@@ -46,7 +46,7 @@ class VerbTemplateParser(
                         lineCount++
                         if (line.isNotEmpty() && line[0] != ' ') {
                             try {
-                                val fields = line.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                val fields = line.split(" ".toRegex(), limit = 2).dropLastWhile { it.isEmpty() }.toTypedArray()
                                 val field1 = fields[0]
                                 val field2 = fields[1].trim { it <= ' ' }
                                 val id = field1.toInt()
