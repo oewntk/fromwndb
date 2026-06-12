@@ -151,7 +151,7 @@ class Parser(
             val tagCnt2 = TagCnt(min(tagCnt.senseNum.toDouble(), existingTagCnt.senseNum.toDouble()).toInt(), max(tagCnt.tagCount.toDouble(), existingTagCnt.tagCount.toDouble()).toInt())
             tagCntByKey[key] = tagCnt2
             if (LOG_TAGCOUNT_MERGE) {
-                psi.printf("Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
+                Tracing.psInfo.printf("[W] Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
             }
         }
 
@@ -179,7 +179,6 @@ class Parser(
             .withIndex()
             .forEach { (index, sense) ->
 
-                // psi.println("\t" + sense)
                 // pos and index
                 assert(pos == sense.synsetId.pos.toChar()) { sense }
 
@@ -375,11 +374,6 @@ class Parser(
         private val silent = if (System.getProperties().containsKey("VERBOSE")) false
         else if (System.getProperties().containsKey("SILENT")) true
         else true
-
-        /**
-         * Info print stream
-         */
-        private val psi: PrintStream = if (!silent) Tracing.psInfo else Tracing.psNull
 
         /**
          * Build synset relations
