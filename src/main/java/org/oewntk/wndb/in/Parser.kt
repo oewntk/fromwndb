@@ -14,7 +14,6 @@ import org.oewntk.pojos.*
 import org.oewntk.utils.Tracing
 import java.io.File
 import java.io.IOException
-import java.io.PrintStream
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
@@ -114,9 +113,9 @@ class Parser(
         val domain = synset.domain.name2
         val members = synset.cSLemmas
             .map { it.toString() }
-            .toTypedArray()
-        val definitions = arrayOf(synset.gloss.definition)
-        val examples: Array<Pair<String, String?>> = synset.gloss.samples.map { it to null }.toTypedArray()
+            .toSet()
+        val definitions = listOf(synset.gloss.definition)
+        val examples = synset.gloss.samples.map { it to null }.toList()
         val relations = buildSynsetRelations(synset.relations)
 
         val modelSynset = ModelSynset(synsetId, SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
@@ -449,7 +448,7 @@ class Parser(
          * @param lemma  lemma
          * @return array of verb frame ids
          */
-        fun buildVerbFrames(synset: Synset, lemma: String): Array<String>? {
+        fun buildVerbFrames(synset: Synset, lemma: String): List<String>? {
             val verbFrames = synset.verbFrames ?: return null
             return verbFrames
                 .filter { verbFrame ->
@@ -458,7 +457,7 @@ class Parser(
                         .any { it == lemma }
                 }
                 .map { VERB_FRAME_NID_TO_IDS[it.frameId]!! }
-                .toTypedArray()
+                .toList()
         }
     }
 }
