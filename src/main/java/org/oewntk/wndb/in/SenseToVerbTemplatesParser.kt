@@ -22,8 +22,8 @@ class SenseToVerbTemplatesParser(
      * @throws IOException io exception
      */
     @Throws(IOException::class)
-    fun parse(): Collection<Pair<String, List<Int>>> {
-        val result: MutableCollection<Pair<String, List<Int>>> = ArrayList()
+    fun parse(): Set<Pair<String, List<Int>>> {
+        val result: MutableSet<Pair<String, List<Int>>> = LinkedHashSet()
         parseVerbTemplates(File(inDir, "sentidx.vrb"), result)
         return result
     }
@@ -38,7 +38,7 @@ class SenseToVerbTemplatesParser(
          * @throws IOException io exception
          */
         @Throws(IOException::class)
-        private fun parseVerbTemplates(file: File, entries: MutableCollection<Pair<String, List<Int>>>) {
+        private fun parseVerbTemplates(file: File, entries: MutableSet<Pair<String, List<Int>>>) {
             // iterate on lines
             BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
                 var lineCount = 0

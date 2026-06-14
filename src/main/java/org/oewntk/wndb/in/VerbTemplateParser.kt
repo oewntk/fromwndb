@@ -21,8 +21,8 @@ class VerbTemplateParser(
      * @throws IOException io exception
      */
     @Throws(IOException::class)
-    fun parse(): Collection<VerbTemplate> {
-        val result: MutableCollection<VerbTemplate> = ArrayList()
+    fun parse(): Set<VerbTemplate> {
+        val result: MutableSet<VerbTemplate> = LinkedHashSet()
         parseVerbTemplates(File(inDir, "verbTemplates.txt"), result)
         return result
     }

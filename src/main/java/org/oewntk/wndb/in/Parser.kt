@@ -72,12 +72,12 @@ class Parser(
     /**
      * Senses
      */
-    private val senses: MutableCollection<ModelSense> = ArrayList()
+    private val senses: MutableSet<ModelSense> = LinkedHashSet()
 
     /**
      * Synsets
      */
-    private val synsets: MutableCollection<ModelSynset> = ArrayList()
+    private val synsets: MutableSet<ModelSynset> = LinkedHashSet()
 
     // intermediate pojos
     /**
@@ -356,7 +356,7 @@ class Parser(
         IndexParser.parseAllIndexes(dir, indexConsumer)
         MorphParser.parseAllMorphs(dir, morphConsumer)
 
-        val lexes: Collection<ModelLex> = ArrayList(lexesByKey.values) // TreeMap.Values are not serializable
+        val lexes: Set<ModelLex> = LinkedHashSet(lexesByKey.values) // TreeMap.Values are not serializable
         val model = CoreModel(lexes, senses, synsets)
         setMorphs(model, lemmaToMorphs)
         return model

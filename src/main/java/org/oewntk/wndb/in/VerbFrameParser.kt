@@ -23,8 +23,8 @@ class VerbFrameParser(
      * @throws IOException io exception
      */
     @Throws(IOException::class)
-    fun parse(): Collection<VerbFrame> {
-        val result: MutableCollection<VerbFrame> = ArrayList()
+    fun parse(): Set<VerbFrame> {
+        val result: MutableSet<VerbFrame> = LinkedHashSet()
         parseVerbFrames(File(inDir, "verbFrames.txt"), result)
         return result
     }
