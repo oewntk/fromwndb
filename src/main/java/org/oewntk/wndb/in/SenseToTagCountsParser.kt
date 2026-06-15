@@ -23,8 +23,8 @@ class SenseToTagCountsParser(
      * @throws IOException io exception
      */
     @Throws(IOException::class)
-    fun parse(): Set<Pair<String, TagCount>> {
-        val result: MutableSet<Pair<String, TagCount>> = LinkedHashSet()
+    fun parse(): List<Pair<String, TagCount>> {
+        val result: MutableList<Pair<String, TagCount>> = ArrayList()
         parseTagCounts(File(inDir, "cntlist.rev"), result)
         return result
     }
@@ -39,7 +39,7 @@ class SenseToTagCountsParser(
          * @throws IOException io exception
          */
         @Throws(IOException::class)
-        private fun parseTagCounts(file: File, entries: MutableSet<Pair<String, TagCount>>) {
+        private fun parseTagCounts(file: File, entries: MutableList<Pair<String, TagCount>>) {
             // iterate on lines
             BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
                 var lineCount = 0

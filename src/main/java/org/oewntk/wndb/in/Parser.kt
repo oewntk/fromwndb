@@ -72,12 +72,12 @@ class Parser(
     /**
      * Senses
      */
-    private val senses: MutableSet<ModelSense> = LinkedHashSet()
+    private val senses: MutableList<ModelSense> = ArrayList()
 
     /**
      * Synsets
      */
-    private val synsets: MutableSet<ModelSynset> = LinkedHashSet()
+    private val synsets: MutableList<ModelSynset> = ArrayList()
 
     // intermediate pojos
     /**
@@ -297,7 +297,7 @@ class Parser(
     /**
      * Lemma to set of morphs
      */
-    private val lemmaToMorphs: MutableMap<String, MutableMap<PartOfSpeech, TreeSet<String>>> = HashMap()
+    private val lemmaToMorphs: MutableMap<String, MutableMap<PartOfSpeech, MutableList<String>>> = HashMap()
 
     /**
      * Morph consumer
@@ -309,7 +309,7 @@ class Parser(
         lemmas.forEach {
             lemmaToMorphs
                 .computeIfAbsent(it.toString()) { HashMap() }
-                .computeIfAbsent(pos) { TreeSet() }
+                .computeIfAbsent(pos) { ArrayList() }
                 .add(morph)
         }
     }
@@ -320,7 +320,7 @@ class Parser(
      * @param model         model
      * @param lemmaToMorphs lemma to morphs map
      */
-    private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<PartOfSpeech, Set<String>>>) {
+    private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<PartOfSpeech, List<String>>>) {
         lemmaToMorphs.forEach { (lemma, map2) ->
             map2.forEach { (pos, morphs) ->
                 val lexes = model.lexFinder(lemma)
@@ -356,7 +356,7 @@ class Parser(
         IndexParser.parseAllIndexes(dir, indexConsumer)
         MorphParser.parseAllMorphs(dir, morphConsumer)
 
-        val lexes: Set<ModelLex> = LinkedHashSet(lexesByKey.values) // TreeMap.Values are not serializable
+        val lexes: List<ModelLex> = ArrayList(lexesByKey.values) // TreeMap.Values are not serializable
         val model = CoreModel(lexes, senses, synsets)
         setMorphs(model, lemmaToMorphs)
         return model
@@ -458,6 +458,17 @@ class Parser(
                 }
                 .map { VERB_FRAME_NID_TO_IDS[it.frameId]!! }
                 .toList()
+        }
+
+        inline fun <T> Iterable<T>.distinctOrDo(onDuplicate: (T) -> Unit): List<T> {
+            val seen = HashSet<T>()
+            return this.filter { element ->
+                val isUnique = seen.add(element)
+                if (!isUnique) {
+                    onDuplicate(element) // Your block called when a duplicate is found
+                }
+                isUnique
+            }
         }
     }
 }
