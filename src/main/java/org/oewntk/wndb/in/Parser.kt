@@ -224,7 +224,7 @@ class Parser(
                             lex.key,
                             sense.synsetId.toString(),
                             indexInLex = index,
-                            verbFrames = verbFrames,
+                            verbFrames = verbFrames?.toSet(),
                             adjPosition = adjPosition,
                             relations = senseRelations
                         )
