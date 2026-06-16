@@ -459,16 +459,5 @@ class Parser(
                 .map { VERB_FRAME_NID_TO_IDS[it.frameId]!! }
                 .toList()
         }
-
-        inline fun <T> Iterable<T>.distinctOrDo(onDuplicate: (T) -> Unit): List<T> {
-            val seen = HashSet<T>()
-            return this.filter { element ->
-                val isUnique = seen.add(element)
-                if (!isUnique) {
-                    onDuplicate(element) // Your block called when a duplicate is found
-                }
-                isUnique
-            }
-        }
     }
 }
