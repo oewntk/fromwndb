@@ -30,7 +30,10 @@ import org.oewntk.model.Synset as ModelSynset
  */
 class Parser(
     private val dir: File,
-    private val verbose: Boolean = false
+    private val logTagCountMerge: Boolean = false,
+    private val warnIfSensenumNotEqualToIndex: Boolean = false,
+    private val warnIfSensenumLessThanIndex: Boolean = true,
+    private val verbose: Boolean = false,
 ) {
     /**
      * Key which is to represent sense
@@ -149,7 +152,7 @@ class Parser(
             // merge
             val tagCnt2 = TagCnt(min(tagCnt.senseNum.toDouble(), existingTagCnt.senseNum.toDouble()).toInt(), max(tagCnt.tagCount.toDouble(), existingTagCnt.tagCount.toDouble()).toInt())
             tagCntByKey[key] = tagCnt2
-            if (LOG_TAGCOUNT_MERGE) {
+            if (logTagCountMerge) {
                 Tracing.psInfo.printf("[W] Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
             }
         }
@@ -236,13 +239,14 @@ class Parser(
                         if (tagCount!!.tagCount != 0) {
                             modelSense.tagCount = tagCount.tagCount
                             if (modelSense.indexInLex + 1 != tagCount.senseNum) {
-                                if (WARN_IF_SENSENUM_NOT_EQUAL_INDEX) Tracing.psErr.println("[W] Unequal sense index ${modelSense.indexInLex + 1} in $sense with sensenum ${tagCount.senseNum}")
-                                if (WARN_IF_SENSENUM_LESS_THAN_INDEX && modelSense.indexInLex + 1 > tagCount.senseNum) Tracing.psErr.println("[W] Sense index ${modelSense.indexInLex + 1} in $sense more than sensenum ${tagCount.senseNum}")
+                                if (warnIfSensenumNotEqualToIndex) Tracing.psErr.println("[W] Unequal sense index ${modelSense.indexInLex + 1} in $sense with sensenum ${tagCount.senseNum}")
+                                if (warnIfSensenumLessThanIndex && modelSense.indexInLex + 1 > tagCount.senseNum) Tracing.psErr.println("[W] Sense index ${modelSense.indexInLex + 1} in $sense more than sensenum ${tagCount.senseNum}")
                             }
                         }
                     }
             }
     }
+
     /**
      * Build sense relations
      *
@@ -363,16 +367,6 @@ class Parser(
     }
 
     companion object {
-
-        private const val LOG_TAGCOUNT_MERGE = false
-        private const val WARN_IF_SENSENUM_NOT_EQUAL_INDEX = false
-        private const val WARN_IF_SENSENUM_LESS_THAN_INDEX = true
-
-        // PRINT STREAMS
-
-        private val silent = if (System.getProperties().containsKey("VERBOSE")) false
-        else if (System.getProperties().containsKey("SILENT")) true
-        else true
 
         /**
          * Build synset relations
