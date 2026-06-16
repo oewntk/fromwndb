@@ -3,6 +3,7 @@
  */
 package org.oewntk.wndb.`in`
 
+import org.oewntk.model.Injector
 import org.oewntk.model.Model
 import org.oewntk.model.ModelInfo
 import org.oewntk.model.TagCount
@@ -36,7 +37,7 @@ class Factory(
             // tag counts
             val senseToTagCounts: Collection<Pair<String, TagCount>> = SenseToTagCountsParser(inDir).parse() // cntlist.rev
 
-            return Model(coreModel, verbFramesById, verbTemplatesById, senseToVerbTemplates, senseToTagCounts)
+            return Model(coreModel, verbFramesById, verbTemplatesById, Injector(senseToVerbTemplates, senseToTagCounts))
                 .apply {
                     source = inDir.absolutePath
                     source2 = inDir2?.absolutePath
