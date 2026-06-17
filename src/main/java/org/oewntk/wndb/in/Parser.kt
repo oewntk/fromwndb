@@ -17,7 +17,6 @@ import java.io.IOException
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
-import kotlin.math.min
 import org.oewntk.model.Lemma as ModelLemma
 import org.oewntk.model.Lex as ModelLex
 import org.oewntk.model.Sense as ModelSense
@@ -31,8 +30,6 @@ import org.oewntk.model.Synset as ModelSynset
 class Parser(
     private val dir: File,
     private val logTagCountMerge: Boolean = false,
-    private val warnIfSensenumNotEqualToIndex: Boolean = false,
-    private val warnIfSensenumLessThanIndex: Boolean = true,
     private val verbose: Boolean = false,
 ) {
     /**
@@ -102,7 +99,7 @@ class Parser(
     /**
      * TagCnt by key representing sense
      */
-    private val tagCntByKey: MutableMap<Key, TagCnt> = HashMap()
+    private val tagCntByKey: MutableMap<Key, Int> = HashMap()
 
     // 1 - C O N S U M E   S Y N S E T   P O J O S
     // from data.(noun|verb|adj|adv)
@@ -150,7 +147,7 @@ class Parser(
         val existingTagCnt = tagCntByKey.put(key, tagCnt)
         if (existingTagCnt != null && existingTagCnt != tagCnt) {
             // merge
-            val tagCnt2 = TagCnt(min(tagCnt.senseNum.toDouble(), existingTagCnt.senseNum.toDouble()).toInt(), max(tagCnt.tagCount.toDouble(), existingTagCnt.tagCount.toDouble()).toInt())
+            val tagCnt2 = max(tagCnt, existingTagCnt)
             tagCntByKey[key] = tagCnt2
             if (logTagCountMerge) {
                 Tracing.psInfo.printf("[W] Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
@@ -236,12 +233,8 @@ class Parser(
                         senses.add(modelSense)
 
                         // tag count
-                        if (tagCount!!.tagCount != 0) {
-                            modelSense.tagCount = tagCount.tagCount
-                            if (modelSense.indexInLex + 1 != tagCount.senseNum) {
-                                if (warnIfSensenumNotEqualToIndex) Tracing.psErr.println("[W] Unequal sense index ${modelSense.indexInLex + 1} in $sense with sensenum ${tagCount.senseNum}")
-                                if (warnIfSensenumLessThanIndex && modelSense.indexInLex + 1 > tagCount.senseNum) Tracing.psErr.println("[W] Sense index ${modelSense.indexInLex + 1} in $sense more than sensenum ${tagCount.senseNum}")
-                            }
+                        if (tagCount!! != 0) {
+                            modelSense.tagCount = tagCount
                         }
                     }
             }
