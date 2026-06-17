@@ -50,7 +50,6 @@ class SenseToTagCountsParser(
                             try {
                                 val fields = line.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                                 val sensekey = fields[0]
-                                // int sensenum = Integer.parseInt(fields[1]);
                                 val senseNum = fields[1].toInt()
                                 val tagCnt = fields[2].toInt()
 
