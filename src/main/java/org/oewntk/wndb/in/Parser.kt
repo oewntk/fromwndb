@@ -353,7 +353,7 @@ class Parser(
         IndexParser.parseAllIndexes(dir, indexConsumer)
         MorphParser.parseAllMorphs(dir, morphConsumer)
 
-        val lexes: List<ModelLex> = ArrayList(lexesByKey.values).sorted()
+        val lexes: List<ModelLex> = lexesByKey.values.toList().sorted()
         val model = CoreModel(lexes, senses.sorted(), synsets.sorted())
         setMorphs(model, lemmaToMorphs)
         return model
