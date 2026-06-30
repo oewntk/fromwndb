@@ -29,13 +29,17 @@ class Factory(
 
         try {
             // verb frames and templates
+            if (verbose) Tracing.psInfo.println("-verb frames")
             val verbFramesById = VerbFrameParser(inDir2 ?: inDir).parse() // orig:verbFrames.txt gen:verbFrames.txt
-            val verbTemplatesById = VerbTemplateParser(inDir2 ?: inDir).parse() // templates.txt
+             if (verbose) Tracing.psInfo.println("-verb templates")
+           val verbTemplatesById = VerbTemplateParser(inDir2 ?: inDir).parse() // templates.txt
 
             // sense to verb templates
+            if (verbose) Tracing.psInfo.println("-senses verb templates")
             val senseToVerbTemplates = SenseToVerbTemplatesParser(inDir).parse() // sentidx.vrb
 
             // tag counts
+            if (verbose) Tracing.psInfo.println("-sense tag counts")
             val senseToTagCounts: Collection<Pair<String, TagCount>> = SenseToTagCountsParser(inDir).parse() // cntlist.rev
 
             return Model(coreModel, verbFramesById, verbTemplatesById, Injector(senseToVerbTemplates, senseToTagCounts))

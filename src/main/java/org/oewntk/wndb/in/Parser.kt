@@ -348,9 +348,13 @@ class Parser(
         indexConsumer: Consumer<Index> = this.indexConsumer,
         morphConsumer: Consumer<MorphMapping> = this.morphConsumer,
     ): CoreModel {
+        if (verbose) Tracing.psInfo.println("-synsets")
         DataParser.parseAllSynsets(dir, synsetConsumer)
+        if (verbose) Tracing.psInfo.println("-senses")
         SenseParser.parseSenses(dir, senseConsumer)
+        if (verbose) Tracing.psInfo.println("-indexes")
         IndexParser.parseAllIndexes(dir, indexConsumer)
+        if (verbose) Tracing.psInfo.println("-morphs")
         MorphParser.parseAllMorphs(dir, morphConsumer)
 
         val lexes: List<ModelLex> = lexesByKey.values.toList().sorted()
