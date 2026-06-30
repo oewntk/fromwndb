@@ -353,8 +353,8 @@ class Parser(
         IndexParser.parseAllIndexes(dir, indexConsumer)
         MorphParser.parseAllMorphs(dir, morphConsumer)
 
-        val lexes: List<ModelLex> = ArrayList(lexesByKey.values) // TreeMap.Values are not serializable
-        val model = CoreModel(lexes, senses, synsets)
+        val lexes: List<ModelLex> = ArrayList(lexesByKey.values).sorted()
+        val model = CoreModel(lexes, senses.sorted(), synsets.sorted())
         setMorphs(model, lemmaToMorphs)
         return model
     }
