@@ -20,11 +20,12 @@ import java.util.function.Supplier
 class Factory(
     private val inDir: File,
     private val inDir2: File?,
+    private val inverses: Boolean = false,
     private val verbose: Boolean = false,
 ) : Supplier<Model?> {
 
     override fun get(): Model? {
-        val coreModel = CoreFactory(inDir, verbose = verbose).get() ?: return null
+        val coreModel = CoreFactory(inDir, inverses = inverses, verbose = verbose).get() ?: return null
 
         try {
             // verb frames and templates
@@ -58,21 +59,8 @@ class Factory(
          * @param inDir2 extra WNDB dir
          * @return model
          */
-        private fun makeModel(inDir: File, inDir2: File?, verbose: Boolean = false): Model? {
-            return Factory(inDir, inDir2, verbose = verbose).get()
-        }
-
-        /**
-         * Make model
-         *
-         * @param dirPath1 WNDB dir path
-         * @param dirPath2 extra WNDB dir path
-         * @return core model
-         */
-        private fun makeModel(dirPath1: String, dirPath2: String?, verbose: Boolean = false): Model? {
-            val inDir = File(dirPath1)
-            val inDir2 = if (dirPath2 == null) null else File(dirPath2)
-            return Factory(inDir, inDir2, verbose = verbose).get()
+        private fun makeModel(inDir: File, inDir2: File?, inverses: Boolean = false, verbose: Boolean = false): Model? {
+            return Factory(inDir, inDir2, inverses = inverses, verbose = verbose).get()
         }
 
         /**
@@ -84,14 +72,19 @@ class Factory(
         fun makeModel(args: Array<String>): Model? {
             var iArg = 0
             var verbose = false
+            var inverses = false
             if (args[iArg] == "--verbose") {
                 verbose = true
+                iArg++
+            }
+            if ("--inverses" == args[iArg]) {
+                inverses = true
                 iArg++
             }
             val inDir = File(args[iArg])
             iArg++
             val inDir2 = if (iArg < args.size) File(args[iArg]) else null
-            return makeModel(inDir, inDir2, verbose = verbose)
+            return makeModel(inDir, inDir2, inverses = inverses, verbose = verbose)
         }
 
         /**

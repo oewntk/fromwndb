@@ -17,6 +17,7 @@ import java.util.function.Supplier
  */
 class CoreFactory(
     private val inDir: File,
+    private val inverses: Boolean = false,
     private val verbose: Boolean = false
 ) : Supplier<CoreModel?> {
 
@@ -24,7 +25,7 @@ class CoreFactory(
         try {
             return Parser(inDir, verbose = verbose)
                 .parseCoreModel()
-                .generateInverseRelations()
+                .apply { if (inverses) generateInverseRelations() }
                 .apply { source = inDir.absolutePath }
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
@@ -40,12 +41,33 @@ class CoreFactory(
         /**
          * Make core model
          *
-         * @param dirPath WNDB dir path
+         * @param inDir WNDB dir
          * @return core model
          */
-        private fun makeCoreModel(dirPath: String): CoreModel? {
-            val inDir = File(dirPath)
-            return CoreFactory(inDir).get()
+        private fun makeCoreModel(inDir: File, inverses: Boolean = false, verbose: Boolean = false): CoreModel? {
+            return CoreFactory(inDir, inverses = inverses, verbose = verbose).get()
+        }
+
+        /**
+         * Make core model from YAML files
+         *
+         * @param args command-line arguments
+         * @return core model
+         */
+        private fun makeCoreModel(args: Array<String>): CoreModel? {
+            var iArg = 0
+            var inverses = false
+            var verbose = false
+            if ("--verbose" == args[iArg]) {
+                verbose = true
+                iArg++
+            }
+            if ("--inverses" == args[iArg]) {
+                inverses = true
+                iArg++
+            }
+            val inDir = File(args[iArg])
+            return makeCoreModel(inDir, inverses = inverses, verbose = verbose)
         }
 
         /**
@@ -55,10 +77,8 @@ class CoreFactory(
          */
         @JvmStatic
         fun main(args: Array<String>) {
-            for (arg in args) {
-                val model = makeCoreModel(arg)
-                Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n", model!!.source, model.info(), ModelInfo.counts(model))
-            }
+            val model = makeCoreModel(args)
+            Tracing.psInfo.printf("[CoreModel] %s%n%s%n%s%n", model!!.source, model.info(), ModelInfo.counts(model))
         }
     }
 }
