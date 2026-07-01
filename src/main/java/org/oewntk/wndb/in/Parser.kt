@@ -150,7 +150,7 @@ class Parser(
             val tagCnt2 = max(tagCnt, existingTagCnt)
             tagCntByKey[key] = tagCnt2
             if (logTagCountMerge) {
-                Tracing.psInfo.printf("[W] Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
+                Tracing.ps.printf("[W] Tag count for %s contained %s, merged to %s%n", key, existingTagCnt, tagCnt2)
             }
         }
 
