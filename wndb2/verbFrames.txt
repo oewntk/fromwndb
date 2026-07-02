@@ -1,39 +1,39 @@
-ditransitive Somebody ----s somebody something
-nonreferential It is ----ing
-nonreferential-sent It ----s that CLAUSE
-via Somebody ----s
-via-adj Somebody ----s Adjective
-via-at Somebody ----s at something
-via-for Somebody ----s for something
-via-ger Somebody ----s VERB-ing
-via-inf Somebody ----s INFINITIVE
-via-on-anim Somebody ----s on somebody
-via-on-inanim Somebody ----s on something
-via-out-of Somebody ----s out of somebody
-via-pp Somebody ----s PP
-via-that Somebody ----s that CLAUSE
-via-to Somebody ----s to somebody
-via-to-inf Somebody ----s to INFINITIVE
-via-whether-inf Somebody ----s whether INFINITIVE
-vibody Somebody's (body part) ----s
-vii Something ----s
-vii-adj Something ----s Adjective/Noun
-vii-inf Something ----s INFINITIVE
-vii-pp Something is ----ing PP
-vii-to Something ----s to somebody
-vtaa Somebody ----s somebody
-vtaa-inf Somebody ----s somebody INFINITIVE
-vtaa-into-ger Somebody ----s somebody into V-ing something
-vtaa-of Somebody ----s somebody of something
-vtaa-pp Somebody ----s somebody PP
-vtaa-to-inf Somebody ----s somebody to INFINITIVE
-vtaa-with Somebody ----s somebody with something
-vtai Somebody ----s something
-vtai-from Somebody ----s something from somebody
-vtai-on Somebody ----s something on somebody
-vtai-pp Somebody ----s something PP
-vtai-to Somebody ----s something to somebody
-vtai-with Somebody ----s something with something
-vtia Something ----s somebody
-vtii Something ----s something
-vtii-adj Something ----s something Adjective/Noun
+vii                 1   Something ----s
+via                 2   Somebody ----s
+nonreferential      3   It is ----ing
+vii-pp              4   Something is ----ing PP
+vtii-adj            5   Something ----s something Adjective/Noun
+vii-adj             6   Something ----s Adjective/Noun
+via-adj             7   Somebody ----s Adjective
+vtai                8   Somebody ----s something
+vtaa                9   Somebody ----s somebody
+vtia                10  Something ----s somebody
+vtii                11  Something ----s something
+vii-to              12  Something ----s to somebody
+via-on-inanim       13  Somebody ----s on something
+ditransitive        14  Somebody ----s somebody something
+vtai-to             15  Somebody ----s something to somebody
+vtai-from           16  Somebody ----s something from somebody
+vtaa-with           17  Somebody ----s somebody with something
+vtaa-of             18  Somebody ----s somebody of something
+vtai-on             19  Somebody ----s something on somebody
+vtaa-pp             20  Somebody ----s somebody PP
+vtai-pp             21  Somebody ----s something PP
+via-pp              22  Somebody ----s PP
+vibody              23  Somebody's (body part) ----s
+vtaa-to-inf         24  Somebody ----s somebody to INFINITIVE
+vtaa-inf            25  Somebody ----s somebody INFINITIVE
+via-that            26  Somebody ----s that CLAUSE
+via-to              27  Somebody ----s to somebody
+via-to-inf          28  Somebody ----s to INFINITIVE
+via-whether-inf     29  Somebody ----s whether INFINITIVE
+vtaa-into-ger       30  Somebody ----s somebody into V-ing something
+vtai-with           31  Somebody ----s something with something
+via-inf             32  Somebody ----s INFINITIVE
+via-ger             33  Somebody ----s VERB-ing
+nonreferential-sent 34  It ----s that CLAUSE
+vii-inf             35  Something ----s INFINITIVE
+via-at              36  Somebody ----s at something
+via-for             37  Somebody ----s for something
+via-on-anim         38  Somebody ----s on somebody
+via-out-of          39  Somebody ----s out of somebody
