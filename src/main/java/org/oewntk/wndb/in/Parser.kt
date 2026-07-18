@@ -4,6 +4,7 @@
 package org.oewntk.wndb.`in`
 
 import org.oewntk.model.CoreModel
+import org.oewntk.model.Example
 import org.oewntk.model.PartOfSpeech
 import org.oewntk.model.SynsetType
 import org.oewntk.parse.DataParser
@@ -115,7 +116,7 @@ class Parser(
             .map { it.toString() }
             .toSet()
         val definitions = listOf(synset.gloss.definition)
-        val examples = synset.gloss.samples.map { it to null }.toList()
+        val examples = synset.gloss.samples.map { Example(it, null) }.toList()
         val relations = buildSynsetRelations(synset.relations)
 
         val modelSynset = ModelSynset(synsetId, SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
