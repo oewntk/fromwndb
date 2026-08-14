@@ -68,7 +68,7 @@ class Parser(
     /**
      * Lexical units
      */
-    private val lexesByKey: MutableMap<Pair<ModelLemma, SynsetType>, ModelLex> = HashMap()
+    private val lexesByKey: MutableMap<Pair<ModelLemma, PartOfSpeech>, ModelLex> = HashMap()
 
     /**
      * Senses
@@ -171,7 +171,7 @@ class Parser(
      */
     private val indexConsumer = Consumer { idx: Index ->
         val lemma = idx.lemma.toString()
-        val pos = idx.pos.toChar()
+        val posChar = idx.pos.toChar()
 
         // senses
         idx.senses
@@ -180,7 +180,7 @@ class Parser(
             .forEach { (index, sense) ->
 
                 // pos and index
-                assert(pos == sense.synsetId.pos.toChar()) { sense }
+                assert(posChar == sense.synsetId.pos.toChar()) { sense }
 
                 //assert i[0] == sense.sensePosIndex : sense
 
@@ -193,7 +193,7 @@ class Parser(
                     .forEach { member: LemmaCS ->
                         val memberLemma = member.toString()
                         // key
-                        val key = Key(lemma, pos, sense.synsetId.offset)
+                        val key = Key(lemma, posChar, sense.synsetId.offset)
 
                         // retrieve tag count
                         val tagCount = tagCntByKey[key]
@@ -206,15 +206,15 @@ class Parser(
                         val sensekey = checkNotNull(sensekeyByKey[key]) { "no sensekey for $key" }
 
                         // type
-                        val type = SynsetType.fromChar(if (pos != 'a') pos else (if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) 's' else 'a'))
+                        val pos = PartOfSpeech.fromChar(posChar)
 
                         // ver frames and adj positions
-                        val verbFrames = if (pos != 'v') null else buildVerbFrames(synset, memberLemma)
-                        val adjPosition = if (pos != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
+                        val verbFrames = if (posChar != 'v') null else buildVerbFrames(synset, memberLemma)
+                        val adjPosition = if (posChar != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
 
                         // collect lex
-                        val lexKey = memberLemma to type
-                        val lex = lexesByKey.computeIfAbsent(lexKey) { ModelLex(memberLemma, type.value.toString()) }
+                        val lexKey = memberLemma to pos
+                        val lex = lexesByKey.computeIfAbsent(lexKey) { ModelLex(memberLemma, pos.value.toString()) }
 
                         // collect sense in lex
                         lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
@@ -239,6 +239,14 @@ class Parser(
                         }
                     }
             }
+    }
+
+    private fun PartOfSpeech.toType(sensekey: String): SynsetType {
+        val isSatellite = if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) true else false
+        return when (this) {
+            PartOfSpeech.A -> if (isSatellite) SynsetType.S else SynsetType.A
+            else -> SynsetType.fromChar(this.value)
+        }
     }
 
     /**
