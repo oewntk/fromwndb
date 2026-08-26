@@ -6,6 +6,7 @@ package org.oewntk.wndb.`in`
 import org.oewntk.model.Injector
 import org.oewntk.model.Model
 import org.oewntk.model.ModelInfo
+import org.oewntk.model.SenseKey
 import org.oewntk.model.TagCount
 import java.io.File
 import java.io.IOException
@@ -31,16 +32,16 @@ class Factory(
             // verb frames and templates
             if (verbose) Tracing.psInfo.println("-verb frames")
             val verbFramesById = VerbFrameParser(inDir2 ?: inDir).parse() // orig:verbFrames.txt gen:verbFrames.txt
-             if (verbose) Tracing.psInfo.println("-verb templates")
-           val verbTemplatesById = VerbTemplateParser(inDir2 ?: inDir).parse() // templates.txt
+            if (verbose) Tracing.psInfo.println("-verb templates")
+            val verbTemplatesById = VerbTemplateParser(inDir2 ?: inDir).parse() // templates.txt
 
             // sense to verb templates
             if (verbose) Tracing.psInfo.println("-senses verb templates")
-            val senseToVerbTemplates = SenseToVerbTemplatesParser(inDir).parse() // sentidx.vrb
+            val senseToVerbTemplates: Collection<Pair<SenseKey, List<Int>>> = SenseToVerbTemplatesParser(inDir).parse() // sentidx.vrb
 
             // tag counts
             if (verbose) Tracing.psInfo.println("-sense tag counts")
-            val senseToTagCounts: Collection<Pair<String, TagCount>> = SenseToTagCountsParser(inDir).parse() // cntlist.rev
+            val senseToTagCounts: Collection<Pair<SenseKey, TagCount>> = SenseToTagCountsParser(inDir).parse() // cntlist.rev
 
             return Model(coreModel, verbFramesById, verbTemplatesById, Injector(senseToVerbTemplates, senseToTagCounts))
                 .apply {

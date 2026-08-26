@@ -22,6 +22,9 @@ import org.oewntk.model.Lemma as ModelLemma
 import org.oewntk.model.Lex as ModelLex
 import org.oewntk.model.Sense as ModelSense
 import org.oewntk.model.Synset as ModelSynset
+import org.oewntk.model.SynsetId as ModelSynsetId
+import org.oewntk.model.SenseKey as ModelSenseKey
+import org.oewntk.model.Relation as ModelRelation
 
 /**
  * WNDB parser
@@ -119,7 +122,7 @@ class Parser(
         val examples = synset.gloss.samples.map { Example(it, null) }.toList()
         val relations = buildSynsetRelations(synset.relations)
 
-        val modelSynset = ModelSynset(synsetId, SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
+        val modelSynset = ModelSynset(ModelSynsetId(synsetId), SynsetType.fromChar(type), domain, members, definitions, examples, null, relations)
         synsets.add(modelSynset)
         pojoSynsetsById[synset.id] = synset
     }
@@ -217,13 +220,13 @@ class Parser(
                         val lex = lexesByKey.computeIfAbsent(lexKey) { ModelLex(memberLemma, pos.value.toString()) }
 
                         // collect sense in lex
-                        lex.senseKeys = lex.senseKeys.toMutableList() + sensekey
+                        lex.senseKeys = lex.senseKeys.toMutableList() + ModelSenseKey(sensekey)
 
                         // senses
                         val modelSense = ModelSense(
-                            sensekey,
+                            ModelSenseKey(sensekey),
                             lex.key,
-                            sense.synsetId.toString(),
+                            ModelSynsetId(sense.synsetId.toString()),
                             indexInLex = index,
                             verbFrames = verbFrames?.toSet(),
                             adjPosition = adjPosition,
@@ -255,13 +258,13 @@ class Parser(
      * @param relations relations including synset relations
      * @return sense relations
      */
-    private fun buildSenseRelations(member: String, relations: Array<Relation>?): MutableMap<String, MutableSet<String>>? {
+    private fun buildSenseRelations(member: String, relations: Array<Relation>?): Map<ModelRelation, Set<ModelSenseKey>>? {
         require(!member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ")) { member }
         if (!relations.isNullOrEmpty()) {
             val map = relations
                 .filterIsInstance<LexRelation>() // discard non-lexical
                 .filter { member.equals((it).fromWord.lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
-                .map { it.rel.name2 to toSensekey(it) } // (type: sensekey)
+                .map { it.rel.name2 to ModelSenseKey(toSensekey(it)) } // (type: sensekey)
                 .groupBy { it.first }
                 .mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: sensekeys
                 .toMutableMap()
@@ -380,11 +383,11 @@ class Parser(
          * @param relations relations
          * @return map type to set of target synset ids
          */
-        private fun buildSynsetRelations(relations: Array<Relation>?): MutableMap<String, MutableSet<String>>? {
+        private fun buildSynsetRelations(relations: Array<Relation>?): Map<ModelRelation, Set<ModelSynsetId>>? {
             if (!relations.isNullOrEmpty()) {
                 val map = relations
                     .filter { it !is LexRelation }
-                    .map { it.rel.name2 to it.toSynsetId.toString() } // (type, synsetid)
+                    .map { it.rel.name2 to ModelSynsetId(it.toSynsetId.toString()) } // (type, synsetid)
                     .groupBy { it.first }
                     .mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: synsetids
                     .toMutableMap()

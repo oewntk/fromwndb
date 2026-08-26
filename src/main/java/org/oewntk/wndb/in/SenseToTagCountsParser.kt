@@ -3,6 +3,7 @@
  */
 package org.oewntk.wndb.`in`
 
+import org.oewntk.model.SenseKey
 import org.oewntk.model.TagCount
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -23,8 +24,8 @@ class SenseToTagCountsParser(
      * @throws IOException io exception
      */
     @Throws(IOException::class)
-    fun parse(): List<Pair<String, TagCount>> {
-        val result: MutableList<Pair<String, TagCount>> = ArrayList()
+    fun parse(): List<Pair<SenseKey, TagCount>> {
+        val result: MutableList<Pair<SenseKey, TagCount>> = ArrayList()
         parseTagCounts(File(inDir, "cntlist.rev"), result)
         return result
     }
@@ -39,7 +40,7 @@ class SenseToTagCountsParser(
          * @throws IOException io exception
          */
         @Throws(IOException::class)
-        private fun parseTagCounts(file: File, entries: MutableList<Pair<String, TagCount>>) {
+        private fun parseTagCounts(file: File, entries: MutableList<Pair<SenseKey, TagCount>>) {
             // iterate on lines
             BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)).use { reader ->
                 var lineCount = 0
@@ -49,11 +50,11 @@ class SenseToTagCountsParser(
                         if (line.isNotEmpty() && line[0] != ' ') {
                             try {
                                 val fields = line.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                                val sensekey = fields[0]
+                                val senseKey = SenseKey(fields[0])
                                 val senseNum = fields[1].toInt()
                                 val tagCnt = fields[2].toInt()
 
-                                entries.add(Pair(sensekey, TagCount(senseNum, tagCnt)))
+                                entries.add(Pair(senseKey, TagCount(senseNum, tagCnt)))
                             } catch (e: RuntimeException) {
                                 Tracing.psErr.println("[E] at line $lineCount $e")
                             }
