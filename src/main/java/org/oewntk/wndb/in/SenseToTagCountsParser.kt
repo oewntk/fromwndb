@@ -50,7 +50,7 @@ class SenseToTagCountsParser(
                         if (line.isNotEmpty() && line[0] != ' ') {
                             try {
                                 val fields = line.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                                val senseKey = SenseKey(fields[0])
+                                val senseKey = SenseKey(fields[0].replace("\\((a|p|ip)\\)".toRegex(),""))
                                 val senseNum = fields[1].toInt()
                                 val tagCnt = fields[2].toInt()
 
