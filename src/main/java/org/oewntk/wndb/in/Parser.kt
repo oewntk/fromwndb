@@ -266,7 +266,8 @@ class Parser(
                 .filter { member.equals((it).fromWord.lemma.toString(), ignoreCase = true) } // discard relations whose from word is not target member
                 .map { it.rel.name2 to ModelSenseKey(toSensekey(it)) } // (type: sensekey)
                 .groupBy { it.first }
-                .mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: sensekeys
+                .mapKeys { (rel, _) -> ModelRelation(rel) } // type: relation
+                .mapValues { (_, targetIds) -> targetIds.map { it.second }.toMutableSet() } // type: sensekeys
                 .toMutableMap()
             return map.ifEmpty { null }
         }
@@ -389,7 +390,8 @@ class Parser(
                     .filter { it !is LexRelation }
                     .map { it.rel.name2 to ModelSynsetId(it.toSynsetId.toString()) } // (type, synsetid)
                     .groupBy { it.first }
-                    .mapValues { it.value.map { it2 -> it2.second }.toMutableSet() } // type: synsetids
+                    .mapKeys { (rel, _) -> ModelRelation(rel) } // type: relation
+                    .mapValues { (_, targetIds) -> targetIds.map { it.second }.toMutableSet() } // type: synsetids
                     .toMutableMap()
                 return map.ifEmpty { null }
             }
