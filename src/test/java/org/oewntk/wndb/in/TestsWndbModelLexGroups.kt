@@ -5,6 +5,7 @@ package org.oewntk.wndb.`in`
 
 import org.junit.BeforeClass
 import org.junit.Test
+import org.oewntk.model.Key2
 import org.oewntk.model.Lemma
 import org.oewntk.model.Lex
 import org.oewntk.model.Lex.Groups.groupByLCLemmaThenByKey2
@@ -28,59 +29,59 @@ class TestsWndbModelLexGroups {
 
     @Test
     fun testCILemmas() {
-        testCILemmas(model, "battle of verdun", ps)
+        testCILemmas(model, Lemma("battle of verdun"), ps)
     }
 
     @Test
     fun testCICounts() {
-        testCICounts(model, "battle of verdun", ps)
+        testCICounts(model, Lemma("battle of verdun"), ps)
     }
 
     @Test
     fun testCICountsFromMap() {
-        testCICountsFromMap(model, "battle of verdun", ps)
+        testCICountsFromMap(model, Lemma("battle of verdun"), ps)
     }
 
     @Test
     fun testCIAi() {
-        testCILexesFor(model, "ai", ps)
+        testCILexesFor(model, Lemma("ai"), ps)
     }
 
     @Test
     fun testCIBaroque() {
-        testCILexesFor(model, "baroque", ps)
+        testCILexesFor(model, Lemma("baroque"), ps)
     }
 
     @Test
     fun testCIWest3() {
-        testCILexesFor3(model, "West", ps)
+        testCILexesFor3(model, Lemma("West"), ps)
     }
 
     @Test
     fun testCIBaroque3() {
-        testCILexesFor3(model, "Baroque", ps)
+        testCILexesFor3(model, Lemma("Baroque"), ps)
     }
 
     @Test
     fun testCIAi3() {
-        testCILexesFor3(model, "Ai", ps)
+        testCILexesFor3(model, Lemma("Ai"), ps)
     }
 
     @Test
     fun testCIAbsolute3() {
-        testCILexesFor3(model, "Absolute", ps)
+        testCILexesFor3(model, Lemma("Absolute"), ps)
     }
 
-    private val lexLCHyperMap: Map<LowerCasedLemma, Map<Lemma, Collection<Lex>>> by lazy { model.lexes.asSequence().groupByLCLemmaThenByKey2() }
+    private val lexLCHyperMap: Map<Lemma, Map<Key2, Collection<Lex>>> by lazy { model.lexes.asSequence().groupByLCLemmaThenByKey2() }
 
     @Test
     fun testCIHypermapWest() {
-        testCIHypermap(lexLCHyperMap, "west", ps)
+        testCIHypermap(lexLCHyperMap, Lemma("west"), ps)
     }
 
     @Test
     fun testCIHypermapBaroque() {
-        testCIHypermap(lexLCHyperMap, "baroque", ps)
+        testCIHypermap(lexLCHyperMap, Lemma("baroque"), ps)
     }
 
     companion object {

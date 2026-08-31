@@ -5,6 +5,7 @@ package org.oewntk.wndb.`in`
 
 import org.junit.BeforeClass
 import org.junit.Test
+import org.oewntk.model.Lemma
 import org.oewntk.model.LibTestModelQueries.testWordByType
 import org.oewntk.model.LibTestModelQueries.testWordByTypeAndPronunciation
 import org.oewntk.wndb.`in`.LibTestsWndbCommon.model
@@ -14,52 +15,52 @@ class TestsWndbModelQueries {
 
     @Test
     fun testRowByType() {
-        testWordByType(model, "row", ps)
+        testWordByType(model, Lemma("row"), ps)
     }
 
     @Test
     fun testRowByPos() {
-        testWordByType(model, "row", ps)
+        testWordByType(model, Lemma("row"), ps)
     }
 
     @Test
     fun testRowByTypeAndPronunciation() {
-        testWordByTypeAndPronunciation(model, "row", ps)
+        testWordByTypeAndPronunciation(model, Lemma("row"), ps)
     }
 
     @Test
     fun testRowByPosAndPronunciation() {
-        testWordByTypeAndPronunciation(model, "row", ps)
+        testWordByTypeAndPronunciation(model, Lemma("row"), ps)
     }
 
     @Test
     fun testCriticalByType() {
-        testWordByType(model, "critical", ps)
+        testWordByType(model, Lemma("critical"), ps)
     }
 
     @Test
     fun testCriticalByPos() {
-        testWordByType(model, "critical", ps)
+        testWordByType(model, Lemma("critical"), ps)
     }
 
     @Test
     fun testBassByPos() {
-        testWordByType(model, "bass", ps)
+        testWordByType(model, Lemma("bass"), ps)
     }
 
     @Test
     fun testBaroqueByPos() {
-        testWordByType(model, "baroque", ps)
+        testWordByType(model, Lemma("baroque"), ps)
     }
 
     @Test
     fun testBaroqueCSByPos() {
-        testWordByType(model, "Baroque", ps)
+        testWordByType(model, Lemma("Baroque"), ps)
     }
 
     @Test
     fun testGaloreByPos() {
-        testWordByType(model, "galore", ps)
+        testWordByType(model, Lemma("galore"), ps)
     }
 
     companion object {

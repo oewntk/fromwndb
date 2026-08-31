@@ -6,6 +6,7 @@ package org.oewntk.wndb.`in`
 import org.junit.BeforeClass
 import org.junit.Test
 import org.oewntk.model.Key
+import org.oewntk.model.Lemma
 import org.oewntk.model.Lex
 import org.oewntk.model.LibTestModel.makeIndexMap
 import org.oewntk.model.LibTestModel.makeSortedIndexMap
@@ -30,69 +31,69 @@ class TestsWndbModelWords {
 
     @Test
     fun testBass() {
-        testWord("bass", model, ps)
+        testWord(Lemma("bass"), model, ps)
     }
 
     @Test
     fun testRow() {
-        testWord("row", model, ps)
+        testWord(Lemma("row"), model, ps)
     }
 
     @Test
     fun testBaroque() {
-        testWords(model, ps, "baroque", "Baroque")
+        testWords(model, ps, arrayOf(Lemma("baroque"), Lemma("Baroque")))
     }
 
     @Test
     fun testEarth() {
-        testWords(model, ps, "earth", "Earth")
+        testWords(model, ps, arrayOf(Lemma("earth"), Lemma("Earth")))
     }
 
     @Test
     fun testCritical() {
-        testWord("critical", PartOfSpeech.A, model, ps)
+        testWord(Lemma("critical"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testHollywood() {
-        testWord("Hollywood", PartOfSpeech.A, model, ps)
+        testWord(Lemma("Hollywood"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testVictorian() {
-        testWord("Victorian", PartOfSpeech.A, model, ps)
+        testWord(Lemma("Victorian"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testAllied() {
-        testWord("allied", PartOfSpeech.A, model, ps)
+        testWord(Lemma("allied"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testAlliedUpper() {
-        testWord("Allied", PartOfSpeech.A, model, ps)
+        testWord(Lemma("Allied"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testAbsent() {
-        testWord("absent", PartOfSpeech.A, model, ps)
+        testWord(Lemma("absent"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testApocryphal() {
-        testWord("apocryphal", PartOfSpeech.A, model, ps)
+        testWord(Lemma("apocryphal"), PartOfSpeech.A, model, ps)
     }
 
     @Test
     fun testUsed() {
-        testWord("used", PartOfSpeech.A, model, ps)
+        testWord(Lemma("used"), PartOfSpeech.A, model, ps)
     }
 
     companion object {
 
         private const val PRINT_TEST_WORDS = false
 
-        private val testWords = setOf("baroque", "Baroque", "bass", "row")
+        private val testWords = setOf(Lemma("baroque"), Lemma("Baroque"), Lemma("bass"), Lemma("row"))
 
         @JvmStatic
         @BeforeClass

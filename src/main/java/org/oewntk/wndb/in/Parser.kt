@@ -116,7 +116,7 @@ class Parser(
         val type = synset.type.toChar()
         val domain = synset.domain.name2
         val members = synset.cSLemmas
-            .map { it.toString() }
+            .map { ModelLemma(it.toString()) }
             .toSet()
         val definitions = listOf(synset.gloss.definition)
         val examples = synset.gloss.samples.map { Example(it, null) }.toList()
@@ -194,7 +194,7 @@ class Parser(
                 members
                     .filter { member: LemmaCS -> member.toString().equals(lemma, ignoreCase = true) }
                     .forEach { member: LemmaCS ->
-                        val memberLemma = member.toString()
+                        val memberLemma = ModelLemma(member.toString())
                         // key
                         val key = Key(lemma, posChar, sense.synsetId.offset)
 
@@ -212,7 +212,7 @@ class Parser(
                         val pos = PartOfSpeech.fromChar(posChar)
 
                         // ver frames and adj positions
-                        val verbFrames = if (posChar != 'v') null else buildVerbFrames(synset, memberLemma)
+                        val verbFrames = if (posChar != 'v') null else buildVerbFrames(synset, memberLemma.form)
                         val adjPosition = if (posChar != 'a') null else (if (member.lemma is AdjLemma) (member.lemma as AdjLemma).position.id else null)
 
                         // collect lex
@@ -333,7 +333,7 @@ class Parser(
     private fun setMorphs(model: CoreModel, lemmaToMorphs: Map<String, Map<PartOfSpeech, List<String>>>) {
         lemmaToMorphs.forEach { (lemma, map2) ->
             map2.forEach { (pos, morphs) ->
-                val lexes = model.lexFinder(lemma)
+                val lexes = model.lexFinder(ModelLemma(lemma))
                 lexes
                     ?.filter { it.partOfSpeech == pos }
                     ?.forEach {
