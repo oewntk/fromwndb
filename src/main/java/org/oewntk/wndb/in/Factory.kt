@@ -43,7 +43,7 @@ class Factory(
             if (verbose) Tracing.psInfo.println("-sense tag counts")
             val senseToTagCounts: Collection<Pair<SenseKey, TagCount>> = SenseToTagCountsParser(inDir).parse() // cntlist.rev
 
-            return Model(coreModel, verbFramesById, verbTemplatesById, Injector(senseToVerbTemplates, senseToTagCounts))
+            return Model(coreModel, verbFramesById, verbTemplatesById, Injector(senseToVerbTemplates, senseToTagCounts), generatedInverses = coreModel.generatedInverses)
                 .apply {
                     source = inDir.absolutePath
                     source2 = inDir2?.absolutePath
