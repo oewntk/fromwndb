@@ -245,7 +245,7 @@ class Parser(
     }
 
     private fun PartOfSpeech.toType(sensekey: String): SynsetType {
-        val isSatellite = if (sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")) true else false
+        val isSatellite = sensekey.split("%".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].startsWith("5")
         return when (this) {
             PartOfSpeech.A -> if (isSatellite) SynsetType.S else SynsetType.A
             else -> SynsetType.fromChar(this.value)

@@ -11,6 +11,8 @@
       <excludeFolder url="file://$MODULE_DIR$/wndb_xml" />
       <excludeFolder url="file://$MODULE_DIR$/wndbxx" />
       <excludeFolder url="file://$MODULE_DIR$/wndbxx_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/wndb2" />
+      <excludeFolder url="file://$MODULE_DIR$/fromwndb.iml" />
     </content>
   </component>
 </module>
