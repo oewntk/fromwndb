@@ -20,11 +20,12 @@ import java.util.function.Consumer
 import kotlin.math.max
 import org.oewntk.model.Lemma as ModelLemma
 import org.oewntk.model.Lex as ModelLex
+import org.oewntk.model.Relation as ModelRelation
+import org.oewntk.model.RelationTarget as ModelRelationTarget
 import org.oewntk.model.Sense as ModelSense
+import org.oewntk.model.SenseKey as ModelSenseKey
 import org.oewntk.model.Synset as ModelSynset
 import org.oewntk.model.SynsetId as ModelSynsetId
-import org.oewntk.model.SenseKey as ModelSenseKey
-import org.oewntk.model.Relation as ModelRelation
 
 /**
  * WNDB parser
@@ -258,7 +259,7 @@ class Parser(
      * @param relations relations including synset relations
      * @return sense relations
      */
-    private fun buildSenseRelations(member: String, relations: Array<Relation>?): Map<ModelRelation, Set<ModelSenseKey>>? {
+    private fun buildSenseRelations(member: String, relations: Array<Relation>?): Map<ModelRelation, Set<ModelRelationTarget>>? {
         require(!member.contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZ")) { member }
         if (!relations.isNullOrEmpty()) {
             val map = relations
@@ -267,7 +268,7 @@ class Parser(
                 .map { it.rel.name2 to ModelSenseKey(toSensekey(it)) } // (type: sensekey)
                 .groupBy { it.first }
                 .mapKeys { (rel, _) -> ModelRelation(rel) } // type: relation
-                .mapValues { (_, targetIds) -> targetIds.map { it.second }.toMutableSet() } // type: sensekeys
+                .mapValues { (_, targetIds) -> targetIds.map { ModelRelationTarget(it.second.id) }.toMutableSet() } // type: sensekeys
                 .toMutableMap()
             return map.ifEmpty { null }
         }
@@ -382,16 +383,16 @@ class Parser(
          * Build synset relations
          *
          * @param relations relations
-         * @return map type to set of target synset ids
+         * @return map type to set of target ids
          */
-        private fun buildSynsetRelations(relations: Array<Relation>?): Map<ModelRelation, Set<ModelSynsetId>>? {
+        private fun buildSynsetRelations(relations: Array<Relation>?): Map<ModelRelation, Set<ModelRelationTarget>>? {
             if (!relations.isNullOrEmpty()) {
                 val map = relations
                     .filter { it !is LexRelation }
                     .map { it.rel.name2 to ModelSynsetId(it.toSynsetId.toString()) } // (type, synsetid)
                     .groupBy { it.first }
                     .mapKeys { (rel, _) -> ModelRelation(rel) } // type: relation
-                    .mapValues { (_, targetIds) -> targetIds.map { it.second }.toMutableSet() } // type: synsetids
+                    .mapValues { (_, targetIds) -> targetIds.map { ModelRelationTarget(it.second.id) }.toMutableSet() } // type: synsetids
                     .toMutableMap()
                 return map.ifEmpty { null }
             }
